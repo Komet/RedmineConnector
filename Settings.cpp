@@ -1,3 +1,6 @@
+#include <QSettings>
+#include <coreplugin/icore.h>
+
 #include "Settings.h"
 #include "RepositoryStruct.h"
 #include "RedmineConnectorPlugin.h"
@@ -11,6 +14,22 @@ Settings::Settings(QObject *parent) :
     IOptionsPage(parent)
 {
     _instance = this;
+    if( QSettings *settings = Core::ICore::instance()->settings() ) {
+        settings->beginGroup(Constants::SETTINGS_CATEGORY);
+        int size = settings->beginReadArray("Repositories");
+        for( int i=0 ; i<size ; i++ ) {
+            Repository r;
+            settings->setArrayIndex(i);
+            r.name         = settings->value("Name").toString();
+            r.server       = settings->value("Server").toString();
+            r.user         = settings->value("User").toString();
+            r.savePassword = settings->value("SavePassword").toInt();
+            r.password     = settings->value("Password").toString();
+            this->_repositories.append(r);
+        }
+        settings->endArray();
+        settings->endGroup();
+    }
 }
 
 Settings::~Settings()
@@ -58,6 +77,20 @@ QWidget* Settings::createPage(QWidget *parent)
 void Settings::apply()
 {
     this->_repositories = this->settingsWidget->repositories();
+    if( QSettings *settings = Core::ICore::instance()->settings() ) {
+        settings->beginGroup(Constants::SETTINGS_CATEGORY);
+        settings->beginWriteArray("Repositories");
+        for( int i=0 ; i<this->_repositories.size() ; i++ ) {
+            settings->setArrayIndex(i);
+            settings->setValue("Name", this->_repositories.at(i).name);
+            settings->setValue("Server", this->_repositories.at(i).server);
+            settings->setValue("User", this->_repositories.at(i).user);
+            settings->setValue("SavePassword", this->_repositories.at(i).savePassword);
+            settings->setValue("Password", this->_repositories.at(i).password);
+        }
+        settings->endArray();
+        settings->endGroup();
+    }
 }
 
 void Settings::finish()
