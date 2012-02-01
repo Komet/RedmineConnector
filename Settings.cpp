@@ -2,7 +2,6 @@
 #include <coreplugin/icore.h>
 
 #include "Settings.h"
-#include "RepositoryStruct.h"
 #include "RedmineConnectorPlugin.h"
 #include "RedmineConnectorConstants.h"
 
@@ -18,7 +17,7 @@ Settings::Settings(QObject *parent) :
         settings->beginGroup(Constants::SETTINGS_CATEGORY);
         int size = settings->beginReadArray("Repositories");
         for( int i=0 ; i<size ; i++ ) {
-            Repository r;
+            SettingsRepository r;
             settings->setArrayIndex(i);
             r.name         = settings->value("Name").toString();
             r.server       = settings->value("Server").toString();
@@ -38,6 +37,9 @@ Settings::~Settings()
 
 Settings* Settings::instance()
 {
+    if( _instance == 0 ) {
+        _instance = new Settings(0);
+    }
     return _instance;
 }
 
@@ -97,9 +99,29 @@ void Settings::finish()
 {
 }
 
-QList<Repository> Settings::repositories()
+QList<SettingsRepository> Settings::repositories()
 {
     return this->_repositories;
+}
+
+void Settings::setMainWindowSplitterSizes(QByteArray sizes)
+{
+    if( QSettings *settings = Core::ICore::instance()->settings() ) {
+        settings->beginGroup(Constants::SETTINGS_CATEGORY);
+        settings->setValue("MainWindowSplitterSizes", sizes);
+        settings->endGroup();
+    }
+}
+
+QByteArray Settings::mainWindowSplitterSizes()
+{
+    QByteArray sizes;
+    if( QSettings *settings = Core::ICore::instance()->settings() ) {
+        settings->beginGroup(Constants::SETTINGS_CATEGORY);
+        sizes = settings->value("MainWindowSplitterSizes").toByteArray();
+        settings->endGroup();
+    }
+    return sizes;
 }
 
 }

@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QWidget>
+#include "Manager.h"
 
 namespace Ui {
 class MainWindow;
@@ -15,6 +16,12 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     
+private slots:
+    void reload();
+    void repositoriesReady();
+    void repositoryChanged(int index);
+    void saveSplitterSizes();
+
 private:
     Ui::MainWindow *ui;
 };

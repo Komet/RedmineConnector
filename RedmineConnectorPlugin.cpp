@@ -34,8 +34,9 @@ bool RedmineConnectorPlugin::initialize(const QStringList &arguments, QString *e
     Core::IMode *mainMode = new MainMode(mainWindow);
     addAutoReleasedObject(mainMode);
 
-    Core::IOptionsPage *settings = new Settings(this);
-    addAutoReleasedObject(settings);
+    //Core::IOptionsPage *settings = new Settings(this);
+    Settings::instance()->setParent(this);
+    addAutoReleasedObject(Settings::instance());
 
     return true;
 }

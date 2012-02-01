@@ -4,6 +4,7 @@
 #include <coreplugin/dialogs/ioptionspage.h>
 #include <QIcon>
 #include "SettingsWidget.h"
+#include "SettingsRepository.h"
 
 namespace RedmineConnector {
 
@@ -22,12 +23,15 @@ public:
     QIcon categoryIcon() const;
     void apply();
     void finish();
-    QList<Repository> repositories();
+    QList<SettingsRepository> repositories();
     static Settings* instance();
+
+    void setMainWindowSplitterSizes(QByteArray sizes);
+    QByteArray mainWindowSplitterSizes();
 
 private:
     SettingsWidget *settingsWidget;
-    QList<Repository> _repositories;
+    QList<SettingsRepository> _repositories;
     static Settings *_instance;
 };
 

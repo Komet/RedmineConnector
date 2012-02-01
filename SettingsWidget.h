@@ -3,7 +3,7 @@
 
 #include <QWidget>
 #include <QList>
-#include "RepositoryStruct.h"
+#include "SettingsRepository.h"
 
 namespace Ui {
 class SettingsWidget;
@@ -17,8 +17,8 @@ public:
     explicit SettingsWidget(QWidget *parent = 0);
     ~SettingsWidget();
 
-    QList<Repository> repositories();
-    void setRepositories(QList<Repository> repositories);
+    QList<RedmineConnector::SettingsRepository> repositories();
+    void setRepositories(QList<RedmineConnector::SettingsRepository> repositories);
     
 private slots:
     void addNewRepository();
@@ -33,7 +33,7 @@ private slots:
 private:
     Ui::SettingsWidget *ui;
 
-    QList<Repository> _repositories;
+    QList<RedmineConnector::SettingsRepository> _repositories;
     int _currentRepository;
 
     void setInputsEnabled(bool enabled);

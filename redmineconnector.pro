@@ -1,4 +1,7 @@
 TARGET = RedmineConnector
+
+QT += network xml
+
 TEMPLATE = lib
 
 DEFINES += REDMINECONNECTOR_LIBRARY
@@ -10,7 +13,17 @@ SOURCES += \
     MainMode.cpp \
     RedmineConnectorPlugin.cpp \
     Settings.cpp \
-    SettingsWidget.cpp
+    SettingsWidget.cpp \
+    NetworkAuthDialog.cpp \
+    Project.cpp \
+    User.cpp \
+    Repository.cpp \
+    Manager.cpp \
+    IssueCategory.cpp \
+    IssueStatus.cpp \
+    Issue.cpp \
+    TableItemIssue.cpp \
+    TableWidgetItemDelegate.cpp
 
 HEADERS +=\
     MainWindow.h \
@@ -20,7 +33,17 @@ HEADERS +=\
     RedmineConnectorConstants.h \
     Settings.h \
     SettingsWidget.h \
-    RepositoryStruct.h
+    NetworkAuthDialog.h \
+    Project.h \
+    User.h \
+    Repository.h \
+    Manager.h \
+    IssueCategory.h \
+    IssueStatus.h \
+    SettingsRepository.h \
+    Issue.h \
+    TableItemIssue.h \
+    TableWidgetItemDelegate.h
 
 OTHER_FILES = RedmineConnector.pluginspec
 
@@ -52,7 +75,9 @@ LIBS += -L$$IDE_PLUGIN_PATH/Nokia
 
 FORMS += \
     MainWindow.ui \
-    SettingsWidget.ui
+    SettingsWidget.ui \
+    NetworkAuthDialog.ui \
+    TableItemIssue.ui
 
 RESOURCES += \
     RedmineConnector.qrc

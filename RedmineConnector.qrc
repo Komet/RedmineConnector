@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>img/redmine_fluid_icon.png</file>
+        <file>img/view-refresh.png</file>
     </qresource>
 </RCC>

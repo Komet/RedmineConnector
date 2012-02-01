@@ -28,7 +28,7 @@ SettingsWidget::~SettingsWidget()
 
 void SettingsWidget::addNewRepository()
 {
-    Repository repo;
+    RedmineConnector::SettingsRepository repo;
     repo.name = tr("Neues Repository");
     repo.savePassword = Qt::Unchecked;
     this->_repositories.append(repo);
@@ -47,6 +47,7 @@ void SettingsWidget::deleteCurrentRepository()
     QListWidgetItem *item = ui->listWidget->takeItem(num);
     delete item;
     this->_repositories.removeAt(num);
+    this->showRepository(ui->listWidget->currentRow());
 }
 
 void SettingsWidget::setInputsEnabled(bool enabled)
@@ -81,7 +82,7 @@ void SettingsWidget::showRepository(int num)
 
 void SettingsWidget::setCurrentRepoName(QString name)
 {
-    if( this->_currentRepository < 0 && this->_currentRepository >= this->_repositories.size() ) {
+    if( this->_currentRepository < 0 || this->_currentRepository >= this->_repositories.size() ) {
         return;
     }
 
@@ -91,7 +92,7 @@ void SettingsWidget::setCurrentRepoName(QString name)
 
 void SettingsWidget::setCurrentRepoServer(QString server)
 {
-    if( this->_currentRepository < 0 && this->_currentRepository >= this->_repositories.size() ) {
+    if( this->_currentRepository < 0 || this->_currentRepository >= this->_repositories.size() ) {
         return;
     }
     this->_repositories[this->_currentRepository].server = server;
@@ -99,7 +100,7 @@ void SettingsWidget::setCurrentRepoServer(QString server)
 
 void SettingsWidget::setCurrentRepoUser(QString user)
 {
-    if( this->_currentRepository < 0 && this->_currentRepository >= this->_repositories.size() ) {
+    if( this->_currentRepository < 0 || this->_currentRepository >= this->_repositories.size() ) {
         return;
     }
     this->_repositories[this->_currentRepository].user = user;
@@ -107,7 +108,7 @@ void SettingsWidget::setCurrentRepoUser(QString user)
 
 void SettingsWidget::setCurrentRepoPassword(QString password)
 {
-    if( this->_currentRepository < 0 && this->_currentRepository >= this->_repositories.size() ) {
+    if( this->_currentRepository < 0 || this->_currentRepository >= this->_repositories.size() ) {
         return;
     }
     this->_repositories[this->_currentRepository].password = password;
@@ -115,7 +116,7 @@ void SettingsWidget::setCurrentRepoPassword(QString password)
 
 void SettingsWidget::setCurrentRepoSavePassword(int state)
 {
-    if( this->_currentRepository < 0 && this->_currentRepository >= this->_repositories.size() ) {
+    if( this->_currentRepository < 0 || this->_currentRepository >= this->_repositories.size() ) {
         return;
     }
     this->_repositories[this->_currentRepository].savePassword = state;
@@ -125,12 +126,12 @@ void SettingsWidget::setCurrentRepoSavePassword(int state)
     ui->repoPassword->setEnabled(state != Qt::Unchecked);
 }
 
-QList<Repository> SettingsWidget::repositories()
+QList<RedmineConnector::SettingsRepository> SettingsWidget::repositories()
 {
     return this->_repositories;
 }
 
-void SettingsWidget::setRepositories(QList<Repository> repositories)
+void SettingsWidget::setRepositories(QList<RedmineConnector::SettingsRepository> repositories)
 {
     this->_repositories = repositories;
     for( int i=0 ; i<this->_repositories.size() ; i++ ) {
