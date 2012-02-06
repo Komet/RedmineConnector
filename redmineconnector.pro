@@ -23,7 +23,6 @@ SOURCES += \
     data/IssueStatus.cpp \
     data/Issue.cpp \
     TableItemIssue.cpp \
-    TableWidgetItemDelegate.cpp \
     data/Priority.cpp \
     IssueDetailWidget.cpp \
     TableItemProject.cpp
@@ -46,7 +45,6 @@ HEADERS +=\
     SettingsRepository.h \
     data/Issue.h \
     TableItemIssue.h \
-    TableWidgetItemDelegate.h \
     data/Priority.h \
     data/IssueDetail.h \
     data/Tracker.h \
