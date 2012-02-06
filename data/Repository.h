@@ -8,13 +8,16 @@
 #include <QDateTime>
 #include <QAuthenticator>
 
-#include "User.h"
 #include "IssueStatus.h"
 #include "Project.h"
+#include "Priority.h"
+#include "Tracker.h"
+#include "User.h"
 
 namespace RedmineConnector {
 
 class Project;
+class User;
 
 class Repository : public QObject
 {
@@ -25,6 +28,7 @@ public:
 
     bool ready();
     void initialize();
+    QNetworkAccessManager* qnam();
 
     int id();
     QString name();
@@ -37,10 +41,17 @@ public:
     void setServer(QString server);
     void setUsername(QString username);
     void setPassword(QString password);
+    Priority* getAndAddPriority(int id, QString name);
 
     User* user(int id);
     IssueStatus *issueStatus(int id);
+    Tracker tracker(int id);
     QList<Project*> projects();
+    QList<User*> users();
+    QList<IssueStatus*> issueStatuses();
+    QList<Priority*> priorities();
+    QList<Tracker> trackers();
+    Project* project(int index);
     
 signals:
     void ready(int, bool);
@@ -51,34 +62,40 @@ public slots:
 private slots:
     void usersReadyRead();
     void issueStatusesReadyRead();
+    void trackersReadyRead();
     void projectsReadyRead();
     void projectReady(int projectId, bool error);
     void checkForTimeouts();
     
 private:
-    bool _ready;
-    QNetworkAccessManager _qnam;
-    QNetworkReply *_projectsReply;
-    QNetworkReply *_usersReply;
-    QNetworkReply *_issueStatusesReply;
-    QTimer _timeoutChecker;
-    bool _queryRunning;
-    QDateTime _lastQueryStarted;
+    bool m_ready;
+    QNetworkAccessManager m_qnam;
+    QNetworkReply *m_projectsReply;
+    QNetworkReply *m_usersReply;
+    QNetworkReply *m_issueStatusesReply;
+    QNetworkReply *m_trackersReply;
+    QTimer m_timeoutChecker;
+    bool m_queryRunning;
+    QDateTime m_lastQueryStarted;
 
-    int _id;
-    QString _name;
-    QString _server;
-    QString _username;
-    QString _password;
+    int m_id;
+    QString m_name;
+    QString m_server;
+    QString m_username;
+    QString m_password;
 
-    QList<Project*> _projects;
-    QList<User*> _users;
-    QList<IssueStatus*> _issueStatuses;
+    QList<Project*> m_projects;
+    QList<User*> m_users;
+    QList<IssueStatus*> m_issueStatuses;
+    QList<Priority*> m_priorities;
+    QList<Tracker> m_trackers;
 
     void cleanUp();
     void parseUsers(QString xml);
     void parseIssueStatuses(QString xml);
     void parseProjects(QString xml);
+    void parseTrackers(QString xml);
+    void gatherPriorities();
 };
 
 }

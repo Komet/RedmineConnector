@@ -15,15 +15,18 @@ SOURCES += \
     Settings.cpp \
     SettingsWidget.cpp \
     NetworkAuthDialog.cpp \
-    Project.cpp \
-    User.cpp \
-    Repository.cpp \
-    Manager.cpp \
-    IssueCategory.cpp \
-    IssueStatus.cpp \
-    Issue.cpp \
+    data/Project.cpp \
+    data/User.cpp \
+    data/Repository.cpp \
+    data/Manager.cpp \
+    data/IssueCategory.cpp \
+    data/IssueStatus.cpp \
+    data/Issue.cpp \
     TableItemIssue.cpp \
-    TableWidgetItemDelegate.cpp
+    TableWidgetItemDelegate.cpp \
+    data/Priority.cpp \
+    IssueDetailWidget.cpp \
+    TableItemProject.cpp
 
 HEADERS +=\
     MainWindow.h \
@@ -34,16 +37,21 @@ HEADERS +=\
     Settings.h \
     SettingsWidget.h \
     NetworkAuthDialog.h \
-    Project.h \
-    User.h \
-    Repository.h \
-    Manager.h \
-    IssueCategory.h \
-    IssueStatus.h \
+    data/Project.h \
+    data/User.h \
+    data/Repository.h \
+    data/Manager.h \
+    data/IssueCategory.h \
+    data/IssueStatus.h \
     SettingsRepository.h \
-    Issue.h \
+    data/Issue.h \
     TableItemIssue.h \
-    TableWidgetItemDelegate.h
+    TableWidgetItemDelegate.h \
+    data/Priority.h \
+    data/IssueDetail.h \
+    data/Tracker.h \
+    IssueDetailWidget.h \
+    TableItemProject.h
 
 OTHER_FILES = RedmineConnector.pluginspec
 
@@ -77,8 +85,13 @@ FORMS += \
     MainWindow.ui \
     SettingsWidget.ui \
     NetworkAuthDialog.ui \
-    TableItemIssue.ui
+    TableItemIssue.ui \
+    IssueDetailWidget.ui \
+    TableItemProject.ui
 
 RESOURCES += \
     RedmineConnector.qrc
 
+TRANSLATIONS += \
+    i18n/RedmineConnector_de.ts \
+    i18n/RedmineConnector_en.ts

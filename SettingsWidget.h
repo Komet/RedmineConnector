@@ -1,8 +1,9 @@
 #ifndef SETTINGSWIDGET_H
 #define SETTINGSWIDGET_H
 
-#include <QWidget>
 #include <QList>
+#include <QWidget>
+
 #include "SettingsRepository.h"
 
 namespace Ui {
@@ -33,8 +34,8 @@ private slots:
 private:
     Ui::SettingsWidget *ui;
 
-    QList<RedmineConnector::SettingsRepository> _repositories;
-    int _currentRepository;
+    QList<RedmineConnector::SettingsRepository> m_repositories;
+    int m_currentRepository;
 
     void setInputsEnabled(bool enabled);
 };

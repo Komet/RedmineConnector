@@ -3,6 +3,7 @@
 
 #include <coreplugin/dialogs/ioptionspage.h>
 #include <QIcon>
+
 #include "SettingsWidget.h"
 #include "SettingsRepository.h"
 

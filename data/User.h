@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "Repository.h"
+#include "data/Repository.h"
 
 namespace RedmineConnector {
 
@@ -14,10 +14,12 @@ class User : public QObject
     Q_OBJECT
 public:
     explicit User(Repository *repository);
+    ~User();
 
     int id();
     QString firstName();
     QString lastName();
+    QString fullName();
     QString mail();
 
     void setId(int id);
@@ -30,11 +32,11 @@ signals:
 public slots:
 
 private:
-    Repository *_repository;
-    int _id;
-    QString _firstName;
-    QString _lastName;
-    QString _mail;
+    Repository *m_repository;
+    int m_id;
+    QString m_firstName;
+    QString m_lastName;
+    QString m_mail;
 };
 
 }

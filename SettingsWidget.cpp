@@ -16,8 +16,8 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     connect(ui->repoPassword, SIGNAL(textChanged(QString)), this, SLOT(setCurrentRepoPassword(QString)));
     connect(ui->repoSavePassword, SIGNAL(stateChanged(int)), this, SLOT(setCurrentRepoSavePassword(int)));
 
-    this->_currentRepository = -1;
-    this->setInputsEnabled(this->_repositories.size() > 0);
+    this->m_currentRepository = -1;
+    this->setInputsEnabled(this->m_repositories.size() > 0);
 }
 
 SettingsWidget::~SettingsWidget()
@@ -31,9 +31,9 @@ void SettingsWidget::addNewRepository()
     RedmineConnector::SettingsRepository repo;
     repo.name = tr("Neues Repository");
     repo.savePassword = Qt::Unchecked;
-    this->_repositories.append(repo);
+    this->m_repositories.append(repo);
     this->setInputsEnabled(true);
-    this->_currentRepository = this->_repositories.size()-1;
+    this->m_currentRepository = this->m_repositories.size()-1;
     QListWidgetItem *item = new QListWidgetItem(repo.name, ui->listWidget);
     ui->listWidget->setCurrentItem(item);
 }
@@ -41,12 +41,12 @@ void SettingsWidget::addNewRepository()
 void SettingsWidget::deleteCurrentRepository()
 {
     int num = ui->listWidget->currentRow();
-    if( num < 0 || num > this->_repositories.size() -1 ) {
+    if( num < 0 || num > this->m_repositories.size() -1 ) {
         return;
     }
     QListWidgetItem *item = ui->listWidget->takeItem(num);
     delete item;
-    this->_repositories.removeAt(num);
+    this->m_repositories.removeAt(num);
     this->showRepository(ui->listWidget->currentRow());
 }
 
@@ -62,7 +62,7 @@ void SettingsWidget::setInputsEnabled(bool enabled)
 
 void SettingsWidget::showRepository(int num)
 {
-    if( num < 0 || num >= this->_repositories.size() ) {
+    if( num < 0 || num >= this->m_repositories.size() ) {
         ui->repoName->setText("");
         ui->repoServer->setText("");
         ui->repoUser->setText("");
@@ -72,54 +72,54 @@ void SettingsWidget::showRepository(int num)
         return;
     }
 
-    this->_currentRepository = num;
-    ui->repoName->setText(this->_repositories.at(num).name);
-    ui->repoServer->setText(this->_repositories.at(num).server);
-    ui->repoUser->setText(this->_repositories.at(num).user);
-    ui->repoPassword->setText(this->_repositories.at(num).password);
-    ui->repoSavePassword->setChecked(this->_repositories.at(num).savePassword == Qt::Checked);
+    this->m_currentRepository = num;
+    ui->repoName->setText(this->m_repositories.at(num).name);
+    ui->repoServer->setText(this->m_repositories.at(num).server);
+    ui->repoUser->setText(this->m_repositories.at(num).user);
+    ui->repoPassword->setText(this->m_repositories.at(num).password);
+    ui->repoSavePassword->setChecked(this->m_repositories.at(num).savePassword == Qt::Checked);
 }
 
 void SettingsWidget::setCurrentRepoName(QString name)
 {
-    if( this->_currentRepository < 0 || this->_currentRepository >= this->_repositories.size() ) {
+    if( this->m_currentRepository < 0 || this->m_currentRepository >= this->m_repositories.size() ) {
         return;
     }
 
-    this->_repositories[this->_currentRepository].name = name;
-    ui->listWidget->item(this->_currentRepository)->setText(name);
+    this->m_repositories[this->m_currentRepository].name = name;
+    ui->listWidget->item(this->m_currentRepository)->setText(name);
 }
 
 void SettingsWidget::setCurrentRepoServer(QString server)
 {
-    if( this->_currentRepository < 0 || this->_currentRepository >= this->_repositories.size() ) {
+    if( this->m_currentRepository < 0 || this->m_currentRepository >= this->m_repositories.size() ) {
         return;
     }
-    this->_repositories[this->_currentRepository].server = server;
+    this->m_repositories[this->m_currentRepository].server = server;
 }
 
 void SettingsWidget::setCurrentRepoUser(QString user)
 {
-    if( this->_currentRepository < 0 || this->_currentRepository >= this->_repositories.size() ) {
+    if( this->m_currentRepository < 0 || this->m_currentRepository >= this->m_repositories.size() ) {
         return;
     }
-    this->_repositories[this->_currentRepository].user = user;
+    this->m_repositories[this->m_currentRepository].user = user;
 }
 
 void SettingsWidget::setCurrentRepoPassword(QString password)
 {
-    if( this->_currentRepository < 0 || this->_currentRepository >= this->_repositories.size() ) {
+    if( this->m_currentRepository < 0 || this->m_currentRepository >= this->m_repositories.size() ) {
         return;
     }
-    this->_repositories[this->_currentRepository].password = password;
+    this->m_repositories[this->m_currentRepository].password = password;
 }
 
 void SettingsWidget::setCurrentRepoSavePassword(int state)
 {
-    if( this->_currentRepository < 0 || this->_currentRepository >= this->_repositories.size() ) {
+    if( this->m_currentRepository < 0 || this->m_currentRepository >= this->m_repositories.size() ) {
         return;
     }
-    this->_repositories[this->_currentRepository].savePassword = state;
+    this->m_repositories[this->m_currentRepository].savePassword = state;
     if( state == Qt::Unchecked ) {
         ui->repoPassword->setText("");
     }
@@ -128,18 +128,18 @@ void SettingsWidget::setCurrentRepoSavePassword(int state)
 
 QList<RedmineConnector::SettingsRepository> SettingsWidget::repositories()
 {
-    return this->_repositories;
+    return this->m_repositories;
 }
 
 void SettingsWidget::setRepositories(QList<RedmineConnector::SettingsRepository> repositories)
 {
-    this->_repositories = repositories;
-    for( int i=0 ; i<this->_repositories.size() ; i++ ) {
-        new QListWidgetItem(this->_repositories.at(i).name, ui->listWidget);
+    this->m_repositories = repositories;
+    for( int i=0 ; i<this->m_repositories.size() ; i++ ) {
+        new QListWidgetItem(this->m_repositories.at(i).name, ui->listWidget);
     }
-    if( this->_repositories.size() > 0 ) {
+    if( this->m_repositories.size() > 0 ) {
         this->setInputsEnabled(true);
         ui->listWidget->setCurrentItem(ui->listWidget->item(0));
-        this->_currentRepository = 0;
+        this->m_currentRepository = 0;
     }
 }

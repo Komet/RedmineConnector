@@ -13,83 +13,152 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="spacing">
-    <number>3</number>
+  <property name="styleSheet">
+   <string notr="true">#tableWidgetIssue {
+	background-color: rgb(255, 255, 255);
+	border: 1px solid rgba(0, 0, 0, 80);
+	border-radius: 10px;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="leftMargin">
+    <number>0</number>
    </property>
-   <property name="margin">
-    <number>6</number>
+   <property name="topMargin">
+    <number>4</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>4</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
-     <item>
-      <widget class="QLabel" name="subject">
-       <property name="text">
-        <string>Subject</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="status">
-       <property name="styleSheet">
-        <string notr="true">color: rgb(38, 139, 210);</string>
-       </property>
-       <property name="text">
-        <string>Status</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1,0">
-     <item>
-      <widget class="QLabel" name="issueId">
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="styleSheet">
-        <string notr="true">color: rgb(255, 160, 35);</string>
-       </property>
-       <property name="text">
-        <string>#123</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="assignedTo">
-       <property name="styleSheet">
-        <string notr="true">color: rgb(170, 170, 170);
+    <widget class="QWidget" name="tableWidgetIssue" native="true">
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+       <number>2</number>
+      </property>
+      <property name="leftMargin">
+       <number>8</number>
+      </property>
+      <property name="topMargin">
+       <number>6</number>
+      </property>
+      <property name="rightMargin">
+       <number>8</number>
+      </property>
+      <property name="bottomMargin">
+       <number>4</number>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout" stretch="1,0">
+        <item>
+         <widget class="QLabel" name="subject">
+          <property name="text">
+           <string>Subject</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="status">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(38, 139, 210);</string>
+          </property>
+          <property name="text">
+           <string>Status</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,1,0">
+        <item>
+         <widget class="QLabel" name="issueId">
+          <property name="font">
+           <font>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: rgb(255, 160, 35);</string>
+          </property>
+          <property name="text">
+           <string>#123</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>10</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="assignedTo">
+          <property name="toolTip">
+           <string>Assigned to</string>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">color: rgb(170, 170, 170);
 </string>
-       </property>
-       <property name="text">
-        <string>Assigned To</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="updated">
-       <property name="styleSheet">
-        <string notr="true">color: rgb(170, 170, 170);</string>
-       </property>
-       <property name="text">
-        <string>Updated</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-    </layout>
+          </property>
+          <property name="text">
+           <string>Assigned To</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="due">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(170, 170, 170);</string>
+          </property>
+          <property name="text">
+           <string>due</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+          <property name="indent">
+           <number>10</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="updated">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(170, 170, 170);</string>
+          </property>
+          <property name="text">
+           <string>Updated</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
    </item>
   </layout>
  </widget>

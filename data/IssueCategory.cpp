@@ -5,27 +5,32 @@ namespace RedmineConnector {
 IssueCategory::IssueCategory(Project *project) :
     QObject(project)
 {
-    this->_project = project;
+    this->m_project = project;
+    this->m_id = 0;
+}
+
+IssueCategory::~IssueCategory()
+{
 }
 
 int IssueCategory::id()
 {
-    return this->_id;
+    return this->m_id;
 }
 
 QString IssueCategory::name()
 {
-    return this->_name;
+    return this->m_name;
 }
 
 void IssueCategory::setId(int id)
 {
-    this->_id = id;
+    this->m_id = id;
 }
 
 void IssueCategory::setName(QString name)
 {
-    this->_name = name;
+    this->m_name = name;
 }
 
 }
