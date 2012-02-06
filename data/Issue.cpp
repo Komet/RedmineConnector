@@ -59,19 +59,19 @@ void Issue::parseIssue(QString xml)
                 QString oldValue;
                 QString newValue;
                 if( attrName.compare("done_ratio") == 0 ) {
-                    trAttrName = tr("% erledigt");
+                    trAttrName = tr("% Done");
                     oldValue = dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text();
                     newValue = dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text();
                 } else if( attrName.compare("start_date") == 0 ) {
-                    trAttrName = tr("Beginn");
-                    oldValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text(), "yyyy-MM-dd").toString("dd.MM.yyyy");
-                    newValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text(), "yyyy-MM-dd").toString("dd.MM.yyyy");
+                    trAttrName = tr("Start Date");
+                    oldValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text(), "yyyy-MM-dd").toString(Qt::SystemLocaleShortDate);
+                    newValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text(), "yyyy-MM-dd").toString(Qt::SystemLocaleShortDate);
                 } else if( attrName.compare("due_date") == 0 ) {
-                    trAttrName = tr("Abgabedatum");
-                    oldValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text(), "yyyy-MM-dd").toString("dd.MM.yyyy");
-                    newValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text(), "yyyy-MM-dd").toString("dd.MM.yyyy");
+                    trAttrName = tr("Due Date");
+                    oldValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text(), "yyyy-MM-dd").toString(Qt::SystemLocaleShortDate);
+                    newValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text(), "yyyy-MM-dd").toString(Qt::SystemLocaleShortDate);
                 } else if( attrName.compare("assigned_to_id") == 0 ) {
-                    trAttrName = tr("Zugewiesen an");
+                    trAttrName = tr("Assignee");
                     oldValue = this->m_project->repository()->user(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt())->fullName();
                     newValue = this->m_project->repository()->user(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt())->fullName();
                 } else if( attrName.compare("status_id") == 0 ) {
@@ -83,33 +83,33 @@ void Issue::parseIssue(QString xml)
                     oldValue = this->m_project->repository()->tracker(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt()).name;
                     newValue = this->m_project->repository()->tracker(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt()).name;
                 } else if( attrName.compare("description") == 0 ) {
-                    trAttrName = tr("Beschreibung");
+                    trAttrName = tr("Description");
                     oldValue = dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text();
                     newValue = dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text();
                 } else if( attrName.compare("category_id") == 0 ) {
-                    trAttrName = tr("Kategorie");
+                    trAttrName = tr("Category");
                     oldValue = this->m_project->issueCategoryFromId(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt())->name();
                     newValue = this->m_project->issueCategoryFromId(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt())->name();
                 } else if( attrName.compare("priority_id") == 0 ) {
-                    trAttrName = tr("Priorität");
-                    oldValue = this->m_project->repository()->getAndAddPriority(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt(), tr("unbekannte Priorität"))->name();
-                    newValue = this->m_project->repository()->getAndAddPriority(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt(), tr("unbekannte Priorität"))->name();
+                    trAttrName = tr("Priority");
+                    oldValue = this->m_project->repository()->getAndAddPriority(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt(), tr("Unkown Priority"))->name();
+                    newValue = this->m_project->repository()->getAndAddPriority(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt(), tr("Unkown Priority"))->name();
                 } else if( attrName.compare("estimated_hours") == 0 ) {
-                    trAttrName = tr("Geschätzer Aufwand");
+                    trAttrName = tr("Estimated Time");
                     oldValue = dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text();
                     newValue = dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text();
                 } else {
-                    trAttrName = tr("unbekanntes Attribut");
+                    trAttrName = tr("Unknown Attribute");
                     oldValue = dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text();
                     newValue = dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text();
                 }
 
                 if( !oldValue.isEmpty() && !newValue.isEmpty() ) {
-                    detail = tr("<b>%1</b> wurde von %2 auf <b>%3</b> gesetzt").arg(trAttrName).arg(oldValue).arg(newValue);
+                    detail = tr("<b>%1</b> changed from %2 to <b>%3</b>").arg(trAttrName).arg(oldValue).arg(newValue);
                 } else if( !oldValue.isEmpty() ) {
-                    detail = tr("<b>%1</b> %2 wurde gelöscht").arg(trAttrName).arg(oldValue);
+                    detail = tr("<b>%1</b> %2 was deleted").arg(trAttrName).arg(oldValue);
                 } else {
-                    detail = tr("<b>%1</b> wurde auf <b>%2</b> gesetzt").arg(trAttrName).arg(newValue);
+                    detail = tr("<b>%1</b> set to <b>%2</b>").arg(trAttrName).arg(newValue);
                 }
             } else if( dnl.at(n).toElement().attribute("property").compare("attachment") == 0 ) {
                 QString filename = dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text();
@@ -117,7 +117,7 @@ void Issue::parseIssue(QString xml)
                                 .arg(this->project()->repository()->server())
                                 .arg(dnl.at(n).toElement().attribute("name"))
                                 .arg(filename);
-                detail = tr("<b>Datei </b><a href=\"%1\">%2</a> wurde hinzugefügt").arg(url).arg(filename);
+                detail = tr("<b>File</b> <a href=\"%1\">%2</a> added").arg(url).arg(filename);
             }
 
 

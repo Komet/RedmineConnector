@@ -78,7 +78,7 @@ void Repository::initialize()
 {
     this->cleanUp();
 
-    QUrl usersUrl(this->server() + "/users.xml?limit=1000");
+    QUrl usersUrl(this->server() + "/users.xml?limit=100");
     usersUrl.setUserName(this->username());
     usersUrl.setPassword(this->password());
 
@@ -161,7 +161,7 @@ void Repository::trackersReadyRead()
     QString msg = this->m_trackersReply->readAll();
     this->parseTrackers(msg);
 
-    QUrl projectsUrl(this->server() + "/projects.xml?limit=1000");
+    QUrl projectsUrl(this->server() + "/projects.xml?limit=100");
     projectsUrl.setUserName(this->username());
     projectsUrl.setPassword(this->password());
 
@@ -314,7 +314,7 @@ IssueStatus* Repository::issueStatus(int id)
     // issue status not found, create a new one
     IssueStatus *is = new IssueStatus(this);
     is->setId(id);
-    is->setName(tr("unknown"));
+    is->setName(tr("unknown", "unknown issue status"));
     this->m_issueStatuses.append(is);
     return is;
 }
@@ -388,7 +388,7 @@ Tracker Repository::tracker(int id)
     }
     Tracker t;
     t.id = 0;
-    t.name = tr("unknown");
+    t.name = tr("unknown", "unknown tracker name");
     return t;
 }
 

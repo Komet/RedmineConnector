@@ -87,7 +87,7 @@ void Project::categoriesReadyRead()
     QString msg = this->m_categoriesReply->readAll();
     this->parseCategories(msg);
 
-    QUrl issuesUrl(this->m_repository->server() + QString("/projects/%1/issues.xml?limit=1000").arg(this->id()));
+    QUrl issuesUrl(this->m_repository->server() + QString("/projects/%1/issues.xml?limit=100").arg(this->id()));
     issuesUrl.setUserName(this->m_repository->username());
     issuesUrl.setPassword(this->m_repository->password());
 

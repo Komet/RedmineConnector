@@ -29,7 +29,7 @@ SettingsWidget::~SettingsWidget()
 void SettingsWidget::addNewRepository()
 {
     RedmineConnector::SettingsRepository repo;
-    repo.name = tr("Neues Repository");
+    repo.name = tr("New Repository");
     repo.savePassword = Qt::Unchecked;
     this->m_repositories.append(repo);
     this->setInputsEnabled(true);

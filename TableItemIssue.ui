@@ -144,6 +144,9 @@
         </item>
         <item>
          <widget class="QLabel" name="updated">
+          <property name="toolTip">
+           <string>Updated On</string>
+          </property>
           <property name="styleSheet">
            <string notr="true">color: rgb(170, 170, 170);</string>
           </property>

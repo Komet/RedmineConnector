@@ -17,7 +17,7 @@
    <item>
     <widget class="QGroupBox" name="groupRepos">
      <property name="title">
-      <string>Repositories</string>
+      <string>Repository</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
@@ -33,7 +33,7 @@
    <item>
     <widget class="QGroupBox" name="groupSettings">
      <property name="title">
-      <string>Einstellungen</string>
+      <string>Settings</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_3">
       <item>
@@ -43,7 +43,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Name</string>
+             <string>Repository Name</string>
             </property>
            </widget>
           </item>
@@ -57,14 +57,14 @@
           <item row="2" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Benutzer</string>
+             <string>Username</string>
             </property>
            </widget>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Passwort</string>
+             <string>Password</string>
             </property>
            </widget>
           </item>
@@ -87,7 +87,7 @@
           <item row="4" column="1">
            <widget class="QCheckBox" name="repoSavePassword">
             <property name="text">
-             <string>Passwort speichern</string>
+             <string>Save Password</string>
             </property>
            </widget>
           </item>
@@ -98,7 +98,7 @@
           <item>
            <widget class="QPushButton" name="buttonDelete">
             <property name="text">
-             <string>Löschen</string>
+             <string>Delete Repository</string>
             </property>
            </widget>
           </item>
@@ -118,7 +118,7 @@
           <item>
            <widget class="QPushButton" name="buttonAddRepo">
             <property name="text">
-             <string>Neues Repository</string>
+             <string>Add Repository</string>
             </property>
            </widget>
           </item>

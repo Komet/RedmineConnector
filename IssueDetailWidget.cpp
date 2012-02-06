@@ -32,7 +32,7 @@ void IssueDetailWidget::setNotes(QString notes, QList<QString> details)
 
 void IssueDetailWidget::setDateTime(QDateTime dateTime)
 {
-    ui->date->setText(dateTime.toString("dd.MM.yyyy HH:mm:ss"));
+    ui->date->setText(dateTime.toString(Qt::SystemLocaleShortDate));
 }
 
 void IssueDetailWidget::setIsTopElement(bool top)

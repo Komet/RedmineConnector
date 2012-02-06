@@ -1,6 +1,8 @@
 #include "TableItemIssue.h"
 #include "ui_TableItemIssue.h"
 
+#include <QDebug>
+
 TableItemIssue::TableItemIssue(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::TableItemIssue)
@@ -47,7 +49,7 @@ void TableItemIssue::setIssue(RedmineConnector::Issue *issue)
     ui->subject->setText(issue->subject());
     ui->status->setText(issue->issueStatus()->name());
     ui->assignedTo->setText(QString("%1 %2").arg(issue->assignedTo()->firstName()).arg(issue->assignedTo()->lastName()).trimmed());
-    ui->updated->setText(issue->updatedOn().toString("dd.MM.yyyy"));
+    ui->updated->setText(issue->updatedOn().date().toString(Qt::SystemLocaleShortDate));
 
     if( !issue->dueDate().isValid() ) {
         ui->due->setText("");
@@ -55,9 +57,9 @@ void TableItemIssue::setIssue(RedmineConnector::Issue *issue)
     }
     int daysTo = QDate::currentDate().daysTo(issue->dueDate());
     if( daysTo == 0 ) {
-        ui->due->setText(tr("heute"));
+        ui->due->setText(tr("Today"));
     } else {
-        ui->due->setText(tr("in %n Tagen", "", daysTo));
+        ui->due->setText(tr("In %n Days", "", daysTo));
     }
 
     if( daysTo > 7 ) {
