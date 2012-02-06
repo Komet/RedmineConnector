@@ -2,7 +2,8 @@
 #define MANAGER_H
 
 #include <QObject>
-#include "Repository.h"
+
+#include "data/Repository.h"
 #include "Settings.h"
 #include "SettingsRepository.h"
 
@@ -17,6 +18,7 @@ public:
 
     void initialize();
     QList<Repository*> repositories();
+    Repository* repository(int index);
     
 signals:
     void ready();
@@ -27,9 +29,9 @@ private slots:
     void repositoryReady(int id, bool error);
 
 private:
-    static Manager *_instance;
+    static Manager *m_instance;
 
-    QList<Repository*> _repositories;
+    QList<Repository*> m_repositories;
 };
 
 }

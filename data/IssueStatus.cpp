@@ -5,27 +5,32 @@ namespace RedmineConnector {
 IssueStatus::IssueStatus(Repository *repository) :
     QObject(repository)
 {
-    this->_repository = repository;
+    this->m_repository = repository;
+    this->m_id = 0;
+}
+
+IssueStatus::~IssueStatus()
+{
 }
 
 int IssueStatus::id()
 {
-    return this->_id;
+    return this->m_id;
 }
 
 QString IssueStatus::name()
 {
-    return this->_name;
+    return this->m_name;
 }
 
 void IssueStatus::setId(int id)
 {
-    this->_id = id;
+    this->m_id = id;
 }
 
 void IssueStatus::setName(QString name)
 {
-    this->_name = name;
+    this->m_name = name;
 }
 
 }

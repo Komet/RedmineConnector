@@ -5,7 +5,7 @@ namespace RedmineConnector {
 
 namespace Constants {
     const char * const SETTINGS_CATEGORY = "RedmineConnector.Settings";
-    const int NETWORK_TIMEOUT_VALUE = 10;
+    const int NETWORK_TIMEOUT_VALUE = 180;
 }
 
 namespace RepositoryActions {

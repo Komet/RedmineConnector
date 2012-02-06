@@ -1,8 +1,8 @@
 #ifndef TABLEWIDGETITEMDELEGATE_H
 #define TABLEWIDGETITEMDELEGATE_H
 
-#include <QStyledItemDelegate>
 #include <QPainter>
+#include <QStyledItemDelegate>
 
 class TableWidgetItemDelegate : public QStyledItemDelegate
 {

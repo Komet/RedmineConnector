@@ -1,19 +1,20 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
-#include <QObject>
+#include <QDateTime>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
-#include <QDateTime>
+#include <QObject>
 #include <QTimer>
 
-#include "Repository.h"
-#include "IssueCategory.h"
-#include "Issue.h"
+#include "data/Issue.h"
+#include "data/IssueCategory.h"
+#include "data/Repository.h"
 
 namespace RedmineConnector {
 
 class Issue;
+class IssueCategory;
 
 class Project : public QObject
 {
@@ -24,6 +25,8 @@ public:
 
     bool ready();
     void initialize();
+    Repository *repository();
+    QNetworkAccessManager *qnam();
 
     int id();
     QString name();
@@ -36,6 +39,10 @@ public:
     void setDescription(QString description);
 
     QList<Issue*> issues();
+    QList<IssueCategory*> issueCategories();
+    Issue* issue(int index);
+    IssueCategory* issueCategory(int index);
+    IssueCategory* issueCategoryFromId(int id);
 
 signals:
     void ready(int, bool);
@@ -48,22 +55,21 @@ private slots:
     void checkForTimeouts();
 
 private:
-    Repository *_repository;
-    bool _ready;
-    QNetworkAccessManager _qnam;
-    QNetworkReply *_issuesReply;
-    QNetworkReply *_categoriesReply;
-    bool _queryRunning;
-    QTimer _timeoutChecker;
-    QDateTime _lastQueryStarted;
+    Repository *m_repository;
+    bool m_ready;
+    QNetworkReply *m_issuesReply;
+    QNetworkReply *m_categoriesReply;
+    bool m_queryRunning;
+    QTimer m_timeoutChecker;
+    QDateTime m_lastQueryStarted;
 
-    int _id;
-    QString _name;
-    QString _identifier;
-    QString _description;
+    int m_id;
+    QString m_name;
+    QString m_identifier;
+    QString m_description;
 
-    QList<IssueCategory*> _issueCategories;
-    QList<Issue*> _issues;
+    QList<IssueCategory*> m_issueCategories;
+    QList<Issue*> m_issues;
 
     void cleanUp();
     void parseCategories(QString xml);

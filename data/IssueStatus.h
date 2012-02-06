@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "Repository.h"
+#include "data/Repository.h"
 
 namespace RedmineConnector {
 
@@ -14,6 +14,7 @@ class IssueStatus : public QObject
     Q_OBJECT
 public:
     explicit IssueStatus(Repository *repository);
+    ~IssueStatus();
     
     int id();
     QString name();
@@ -26,10 +27,10 @@ signals:
 public slots:
     
 private:
-    Repository *_repository;
+    Repository *m_repository;
 
-    int _id;
-    QString _name;
+    int m_id;
+    QString m_name;
 };
 
 }

@@ -4,11 +4,19 @@
 #include <coreplugin/icore.h>
 #include <coreplugin/icontext.h>
 #include <coreplugin/coreconstants.h>
-#include <QtGui/QMainWindow>
+
+#include <QCoreApplication>
+#include <QDebug>
+#include <QLocale>
+#include <QTranslator>
 #include <QtCore/QtPlugin>
+#include <QtCore/QLibraryInfo>
+#include <QtGui/QMainWindow>
+
 #include "MainMode.h"
 #include "MainWindow.h"
 #include "Settings.h"
+
 
 using namespace RedmineConnector::Internal;
 
@@ -27,6 +35,17 @@ bool RedmineConnectorPlugin::initialize(const QStringList &arguments, QString *e
     Q_UNUSED(arguments)
     Q_UNUSED(errorString)
 
+    const QString &locale = Core::ICore::instance()->userInterfaceLanguage();
+    if (!locale.isEmpty()) {
+        QTranslator *translator = new QTranslator(this);
+        const QString &creatorTrPath = Core::ICore::instance()->resourcePath() + QLatin1String("/translations");
+        const QString &qtTrPath = QLibraryInfo::location(QLibraryInfo::TranslationsPath);
+        const QString &trFile = QLatin1String("RedmineConnector_") + locale;
+        if( translator->load(trFile, qtTrPath) || translator->load(trFile, creatorTrPath) ) {
+            qApp->installTranslator(translator);
+        }
+    }
+
     _instance = this;
 
     MainWindow *mainWindow = new MainWindow();
@@ -34,7 +53,6 @@ bool RedmineConnectorPlugin::initialize(const QStringList &arguments, QString *e
     Core::IMode *mainMode = new MainMode(mainWindow);
     addAutoReleasedObject(mainMode);
 
-    //Core::IOptionsPage *settings = new Settings(this);
     Settings::instance()->setParent(this);
     addAutoReleasedObject(Settings::instance());
 
