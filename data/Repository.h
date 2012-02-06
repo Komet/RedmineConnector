@@ -45,12 +45,10 @@ public:
 
     User* user(int id);
     IssueStatus *issueStatus(int id);
-    Tracker tracker(int id);
     QList<Project*> projects();
     QList<User*> users();
     QList<IssueStatus*> issueStatuses();
     QList<Priority*> priorities();
-    QList<Tracker> trackers();
     Project* project(int index);
     
 signals:
@@ -62,7 +60,6 @@ public slots:
 private slots:
     void usersReadyRead();
     void issueStatusesReadyRead();
-    void trackersReadyRead();
     void projectsReadyRead();
     void projectReady(int projectId, bool error);
     void checkForTimeouts();
@@ -73,7 +70,6 @@ private:
     QNetworkReply *m_projectsReply;
     QNetworkReply *m_usersReply;
     QNetworkReply *m_issueStatusesReply;
-    QNetworkReply *m_trackersReply;
     QTimer m_timeoutChecker;
     bool m_queryRunning;
     QDateTime m_lastQueryStarted;
@@ -88,13 +84,11 @@ private:
     QList<User*> m_users;
     QList<IssueStatus*> m_issueStatuses;
     QList<Priority*> m_priorities;
-    QList<Tracker> m_trackers;
 
     void cleanUp();
     void parseUsers(QString xml);
     void parseIssueStatuses(QString xml);
     void parseProjects(QString xml);
-    void parseTrackers(QString xml);
     void gatherPriorities();
 };
 

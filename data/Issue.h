@@ -6,13 +6,13 @@
 #include <QNetworkReply>
 #include <QObject>
 
-#include "data/IssueCategory.h"
-#include "data/IssueDetail.h"
-#include "data/IssueStatus.h"
-#include "data/Priority.h"
-#include "data/Project.h"
-#include "data/Tracker.h"
-#include "data/User.h"
+#include "IssueCategory.h"
+#include "IssueDetail.h"
+#include "IssueStatus.h"
+#include "Priority.h"
+#include "Project.h"
+#include "Tracker.h"
+#include "User.h"
 
 namespace RedmineConnector {
 

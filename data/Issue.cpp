@@ -72,28 +72,28 @@ void Issue::parseIssue(QString xml)
                     newValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text(), "yyyy-MM-dd").toString(Qt::SystemLocaleShortDate);
                 } else if( attrName.compare("assigned_to_id") == 0 ) {
                     trAttrName = tr("Assignee");
-                    oldValue = this->m_project->repository()->user(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt())->fullName();
-                    newValue = this->m_project->repository()->user(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt())->fullName();
+                    oldValue = this->project()->repository()->user(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt())->fullName();
+                    newValue = this->project()->repository()->user(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt())->fullName();
                 } else if( attrName.compare("status_id") == 0 ) {
                     trAttrName = tr("Status");
                     oldValue = this->m_project->repository()->issueStatus(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt())->name();
                     newValue = this->m_project->repository()->issueStatus(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt())->name();
                 } else if( attrName.compare("tracker_id") == 0 ) {
                     trAttrName = tr("Tracker");
-                    oldValue = this->m_project->repository()->tracker(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt()).name;
-                    newValue = this->m_project->repository()->tracker(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt()).name;
+                    oldValue = this->project()->tracker(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt()).name;
+                    newValue = this->project()->tracker(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt()).name;
                 } else if( attrName.compare("description") == 0 ) {
                     trAttrName = tr("Description");
                     oldValue = dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text();
                     newValue = dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text();
                 } else if( attrName.compare("category_id") == 0 ) {
                     trAttrName = tr("Category");
-                    oldValue = this->m_project->issueCategoryFromId(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt())->name();
-                    newValue = this->m_project->issueCategoryFromId(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt())->name();
+                    oldValue = this->project()->issueCategoryFromId(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt())->name();
+                    newValue = this->project()->issueCategoryFromId(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt())->name();
                 } else if( attrName.compare("priority_id") == 0 ) {
                     trAttrName = tr("Priority");
-                    oldValue = this->m_project->repository()->getAndAddPriority(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt(), tr("Unkown Priority"))->name();
-                    newValue = this->m_project->repository()->getAndAddPriority(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt(), tr("Unkown Priority"))->name();
+                    oldValue = this->project()->repository()->getAndAddPriority(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt(), tr("Unkown Priority"))->name();
+                    newValue = this->project()->repository()->getAndAddPriority(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt(), tr("Unkown Priority"))->name();
                 } else if( attrName.compare("estimated_hours") == 0 ) {
                     trAttrName = tr("Estimated Time");
                     oldValue = dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text();

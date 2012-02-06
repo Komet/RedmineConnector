@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include "data/Repository.h"
+#include "Repository.h"
 
 namespace RedmineConnector {
 

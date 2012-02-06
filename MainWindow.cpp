@@ -219,7 +219,7 @@ void MainWindow::showIssue(Issue *issue)
 
     // Tracker
     ui->comboTracker->clear();
-    QList<Tracker> trackers = issue->project()->repository()->trackers();
+    QList<Tracker> trackers = issue->project()->trackers();
     for( int i=0, n=trackers.size() ; i<n ; i++ ) {
         ui->comboTracker->addItem(trackers[i].name, trackers[i].id);
         if( trackers[i].id == issue->tracker().id ) {
@@ -257,7 +257,7 @@ void MainWindow::saveIssueChanges()
     IssueStatus *status = this->m_currentIssue->project()->repository()->issueStatus(ui->comboStatus->itemData(ui->comboStatus->currentIndex()).toInt());
     Priority *priority = this->m_currentIssue->project()->repository()->getAndAddPriority(ui->comboStatus->itemData(ui->comboPriority->currentIndex()).toInt(), "");
     User *assignedTo = this->m_currentIssue->project()->repository()->user(ui->comboAssignedTo->itemData(ui->comboAssignedTo->currentIndex()).toInt());
-    Tracker tracker = this->m_currentIssue->project()->repository()->tracker(ui->comboTracker->itemData(ui->comboTracker->currentIndex()).toInt());
+    Tracker tracker = this->m_currentIssue->project()->tracker(ui->comboTracker->itemData(ui->comboTracker->currentIndex()).toInt());
     IssueCategory *category = this->m_currentIssue->project()->issueCategory(ui->comboCategory->currentIndex());
     ui->stackedWidget->setCurrentIndex(1);
     disconnect(this->m_currentIssue, 0, this, 0);

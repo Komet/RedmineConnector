@@ -7,9 +7,10 @@
 #include <QObject>
 #include <QTimer>
 
-#include "data/Issue.h"
-#include "data/IssueCategory.h"
-#include "data/Repository.h"
+#include "Issue.h"
+#include "IssueCategory.h"
+#include "Repository.h"
+#include "Tracker.h"
 
 namespace RedmineConnector {
 
@@ -43,6 +44,8 @@ public:
     Issue* issue(int index);
     IssueCategory* issueCategory(int index);
     IssueCategory* issueCategoryFromId(int id);
+    Tracker tracker(int id);
+    QList<Tracker> trackers();
 
 signals:
     void ready(int, bool);
@@ -50,7 +53,7 @@ signals:
 public slots:
 
 private slots:
-    void categoriesReadyRead();
+    void projectReadyRead();
     void issuesReadyRead();
     void checkForTimeouts();
 
@@ -58,7 +61,7 @@ private:
     Repository *m_repository;
     bool m_ready;
     QNetworkReply *m_issuesReply;
-    QNetworkReply *m_categoriesReply;
+    QNetworkReply *m_projectReply;
     bool m_queryRunning;
     QTimer m_timeoutChecker;
     QDateTime m_lastQueryStarted;
@@ -70,9 +73,10 @@ private:
 
     QList<IssueCategory*> m_issueCategories;
     QList<Issue*> m_issues;
+    QList<Tracker> m_trackers;
 
     void cleanUp();
-    void parseCategories(QString xml);
+    void parseProject(QString xml);
     void parseIssues(QString xml);
 };
 

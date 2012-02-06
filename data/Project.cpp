@@ -13,7 +13,7 @@ Project::Project(Repository *repository) :
     this->m_repository = repository;
     this->m_ready = false;
     this->m_queryRunning = false;
-    this->m_categoriesReply = 0;
+    this->m_projectReply = 0;
     this->m_issuesReply = 0;
     connect(&this->m_timeoutChecker, SIGNAL(timeout()), this, SLOT(checkForTimeouts()));
     this->m_timeoutChecker.start(2000);
@@ -27,8 +27,8 @@ void Project::cleanUp()
 {
     this->m_ready = false;
     this->m_queryRunning = false;
-    if( this->m_categoriesReply != 0 ) {
-        this->m_categoriesReply->abort();
+    if( this->m_projectReply != 0 ) {
+        this->m_projectReply->abort();
     }
     if( this->m_issuesReply != 0 ) {
         this->m_issuesReply->abort();
@@ -41,6 +41,7 @@ void Project::cleanUp()
         delete this->m_issueCategories[i];
     }
     this->m_issueCategories.clear();
+    this->m_trackers.clear();
 }
 
 bool Project::ready()
@@ -51,8 +52,8 @@ bool Project::ready()
 void Project::checkForTimeouts()
 {
     if( this->m_queryRunning && this->m_lastQueryStarted.secsTo(QDateTime::currentDateTime()) > Constants::NETWORK_TIMEOUT_VALUE ) {
-        if( this->m_categoriesReply != 0 ) {
-            this->m_categoriesReply->abort();
+        if( this->m_projectReply != 0 ) {
+            this->m_projectReply->abort();
         }
         if( this->m_issuesReply != 0 ) {
             this->m_issuesReply->abort();
@@ -64,28 +65,28 @@ void Project::initialize()
 {
     this->cleanUp();
 
-    QUrl categoriesUrl(this->m_repository->server() + QString("/projects/%1/issue_categories.xml").arg(this->id()));
-    categoriesUrl.setUserName(this->m_repository->username());
-    categoriesUrl.setPassword(this->m_repository->password());
+    QUrl projectUrl(this->m_repository->server() + QString("/projects/%1.xml?include=trackers,issue_categories").arg(this->id()));
+    projectUrl.setUserName(this->m_repository->username());
+    projectUrl.setPassword(this->m_repository->password());
 
     this->m_lastQueryStarted = QDateTime::currentDateTime();
     this->m_queryRunning = true;
-    this->m_categoriesReply = this->qnam()->get(QNetworkRequest(categoriesUrl));
-    connect(this->m_categoriesReply, SIGNAL(finished()), this, SLOT(categoriesReadyRead()));
+    this->m_projectReply = this->qnam()->get(QNetworkRequest(projectUrl));
+    connect(this->m_projectReply, SIGNAL(finished()), this, SLOT(projectReadyRead()));
 }
 
-void Project::categoriesReadyRead()
+void Project::projectReadyRead()
 {
     this->m_queryRunning = false;
 
-    if( this->m_categoriesReply->error() != QNetworkReply::NoError ) {
+    if( this->m_projectReply->error() != QNetworkReply::NoError ) {
         this->cleanUp();
         emit ready(this->id(), true);
         return;
     }
 
-    QString msg = this->m_categoriesReply->readAll();
-    this->parseCategories(msg);
+    QString msg = this->m_projectReply->readAll();
+    this->parseProject(msg);
 
     QUrl issuesUrl(this->m_repository->server() + QString("/projects/%1/issues.xml?limit=100").arg(this->id()));
     issuesUrl.setUserName(this->m_repository->username());
@@ -111,11 +112,11 @@ void Project::issuesReadyRead()
     this->parseIssues(msg);
     this->m_ready = true;
     emit ready(this->id(), false);
-    this->m_categoriesReply = 0;
+    this->m_projectReply = 0;
     this->m_issuesReply = 0;
 }
 
-void Project::parseCategories(QString xml)
+void Project::parseProject(QString xml)
 {
     // create an empty category
     IssueCategory *eC = new IssueCategory(this);
@@ -128,9 +129,17 @@ void Project::parseCategories(QString xml)
     QDomNodeList nl = domDoc.elementsByTagName("issue_category");
     for( int i=0, n=nl.count() ; i<n ; i++ ) {
         IssueCategory *ic = new IssueCategory(this);
-        ic->setId(nl.at(i).toElement().elementsByTagName("id").at(0).toElement().text().toInt());
-        ic->setName(nl.at(i).toElement().elementsByTagName("name").at(0).toElement().text());
+        ic->setId(nl.at(i).toElement().attribute("id").toInt());
+        ic->setName(nl.at(i).toElement().attribute("name"));
         this->m_issueCategories.append(ic);
+    }
+
+    nl = domDoc.elementsByTagName("tracker");
+    for( int i=0, n=nl.count() ; i<n ; i++ ) {
+        Tracker t;
+        t.id = nl.at(i).toElement().attribute("id").toInt();
+        t.name = nl.at(i).toElement().attribute("name");
+        this->m_trackers.append(t);
     }
 }
 
@@ -155,11 +164,13 @@ void Project::parseIssues(QString xml)
         issue->setAssignedTo(this->m_repository->user(nl.at(i).toElement().elementsByTagName("assigned_to").at(0).toElement().attribute("id").toInt()));
         issue->setIssueStatus(this->m_repository->issueStatus(nl.at(i).toElement().elementsByTagName("status").at(0).toElement().attribute("id").toInt()));
         issue->setIssueCategory(this->issueCategoryFromId(nl.at(i).toElement().elementsByTagName("category").at(0).toElement().attribute("id").toInt()));
-        issue->setTracker(this->m_repository->tracker(nl.at(i).toElement().elementsByTagName("tracker").at(0).toElement().attribute("id").toInt()));
+        issue->setTracker(this->tracker(nl.at(i).toElement().elementsByTagName("tracker").at(0).toElement().attribute("id").toInt()));
         this->m_issues.append(issue);
     }
 }
 
+
+/*** GETTER ***/
 
 QList<Issue*> Project::issues()
 {
@@ -178,6 +189,24 @@ Issue* Project::issue(int index)
     }
 
     return new Issue(this);
+}
+
+QList<Tracker> Project::trackers()
+{
+    return this->m_trackers;
+}
+
+Tracker Project::tracker(int id)
+{
+    for( int i=0, n=this->m_trackers.size() ; i<n ; i++ ) {
+        if( this->m_trackers[i].id == id ) {
+            return this->m_trackers[i];
+        }
+    }
+    Tracker t;
+    t.id = 0;
+    t.name = tr("unknown", "unknown tracker name");
+    return t;
 }
 
 IssueCategory* Project::issueCategory(int index)
@@ -203,8 +232,6 @@ QNetworkAccessManager* Project::qnam()
 {
     return this->repository()->qnam();
 }
-
-/*** GETTER ***/
 
 Repository *Project::repository()
 {

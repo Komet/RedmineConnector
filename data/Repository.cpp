@@ -56,7 +56,6 @@ void Repository::cleanUp()
         delete this->m_issueStatuses[i];
     }
     this->m_issueStatuses.clear();
-    this->m_trackers.clear();
 }
 
 void Repository::checkForTimeouts()
@@ -137,29 +136,6 @@ void Repository::issueStatusesReadyRead()
 
     QString msg = this->m_issueStatusesReply->readAll();
     this->parseIssueStatuses(msg);
-
-    QUrl trackersUrl(this->server() + "/trackers.xml");
-    trackersUrl.setUserName(this->username());
-    trackersUrl.setPassword(this->password());
-
-    this->m_lastQueryStarted = QDateTime::currentDateTime();
-    this->m_queryRunning = true;
-    this->m_trackersReply = this->m_qnam.get(QNetworkRequest(trackersUrl));
-    connect(this->m_trackersReply, SIGNAL(finished()), this, SLOT(trackersReadyRead()));
-}
-
-void Repository::trackersReadyRead()
-{
-    this->m_queryRunning = false;
-
-    if( this->m_trackersReply->error() != QNetworkReply::NoError ) {
-        this->cleanUp();
-        emit ready(this->id(), true);
-        return;
-    }
-
-    QString msg = this->m_trackersReply->readAll();
-    this->parseTrackers(msg);
 
     QUrl projectsUrl(this->server() + "/projects.xml?limit=100");
     projectsUrl.setUserName(this->username());
@@ -251,19 +227,6 @@ void Repository::parseIssueStatuses(QString xml)
         is->setId(nl.at(i).toElement().elementsByTagName("id").at(0).toElement().text().toInt());
         is->setName(nl.at(i).toElement().elementsByTagName("name").at(0).toElement().text());
         this->m_issueStatuses.append(is);
-    }
-}
-
-void Repository::parseTrackers(QString xml)
-{
-    QDomDocument domDoc;
-    domDoc.setContent(xml);
-    QDomNodeList nl = domDoc.elementsByTagName("tracker");
-    for( int i=0, n=nl.count() ; i<n ; i++ ) {
-        Tracker t;
-        t.id = nl.at(i).toElement().elementsByTagName("id").at(0).toElement().text().toInt();
-        t.name = nl.at(i).toElement().elementsByTagName("name").at(0).toElement().text();
-        this->m_trackers.append(t);
     }
 }
 
@@ -372,24 +335,6 @@ QList<User*> Repository::users()
 QList<IssueStatus*> Repository::issueStatuses()
 {
     return this->m_issueStatuses;
-}
-
-QList<Tracker> Repository::trackers()
-{
-    return this->m_trackers;
-}
-
-Tracker Repository::tracker(int id)
-{
-    for( int i=0, n=this->m_trackers.size() ; i<n ; i++ ) {
-        if( this->m_trackers[i].id == id ) {
-            return this->m_trackers[i];
-        }
-    }
-    Tracker t;
-    t.id = 0;
-    t.name = tr("unknown", "unknown tracker name");
-    return t;
 }
 
 QList<Project*> Repository::projects()

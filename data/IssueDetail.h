@@ -1,7 +1,7 @@
 #ifndef ISSUEDETAIL_H
 #define ISSUEDETAIL_H
 
-#include "data/User.h"
+#include "User.h"
 
 namespace RedmineConnector {
 
