@@ -1,4 +1,4 @@
-<plugin name=\"RedmineConnector\" version=\"0.0.1\" compatVersion=\"2.4.0\">
+<plugin name=\"RedmineConnector\" version=\"0.1.0\" compatVersion=\"2.4.0\">
     <vendor>kVibes</vendor>
     <copyright>(C) 2012 Daniel Kabel (daniel.kabel@me.com)</copyright>
     <license>This plugin is free software: you can redistribute it and/or modify
