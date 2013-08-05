@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->labelIssues->setFont(font);
     ui->labelProjects->setFont(font);
 
-    QMovie *movie = new QMovie(":/img/ajax-loader-1.gif");
+    QMovie *movie = new QMovie(QLatin1String(":/img/ajax-loader-1.gif"));
     ui->labelLoading->setMovie(movie);
     movie->start();
 
@@ -146,12 +146,12 @@ void MainWindow::showIssue(Issue *issue)
 {
     this->m_currentIssue = issue;
 
-    ui->subject->setText(QString("#%1 %2").arg(issue->id()).arg(issue->subject()));
+    ui->subject->setText(QString::fromLatin1("#%1 %2").arg(issue->id()).arg(issue->subject()));
     ui->dateDueTo->setDate((issue->dueDate().isValid()) ? issue->dueDate() : QDate::currentDate());
     this->m_currentIssueHasDueDate = issue->dueDate().isValid();
     ui->dateStarted->setDate((issue->startDate().isValid()) ? issue->startDate() : QDate::currentDate());
     this->m_currentIssueHasStartDate = issue->startDate().isValid();
-    ui->comboDoneRatio->setCurrentIndex(issue->doneRatio()/10);
+    ui->comboDoneRatio->setCurrentIndex(static_cast<int>(issue->doneRatio()/10.));
 
     for( int i=0, n=this->m_notes.size() ; i<n ; i++ ) {
         ui->verticalLayoutDetails->removeWidget(this->m_notes.at(i));
@@ -166,7 +166,7 @@ void MainWindow::showIssue(Issue *issue)
     QList<IssueDetail> issueDetails = issue->issueDetails();
     foreach( IssueDetail detail, issueDetails ) {
         IssueDetailWidget *issueDetailWidget = new IssueDetailWidget(this);
-        issueDetailWidget->setAuthor(detail.user->firstName() + " " + detail.user->lastName());
+        issueDetailWidget->setAuthor(detail.user->firstName() + QLatin1String(" ") + detail.user->lastName());
         issueDetailWidget->setDateTime(detail.createdOn);
         issueDetailWidget->setNotes(detail.notes, detail.details);
         issueDetailWidget->setIsTopElement(false);
@@ -175,13 +175,13 @@ void MainWindow::showIssue(Issue *issue)
     }
 
     // Description
-    ui->comment->setText("");
+    ui->comment->setText(QString());
 
     // User
     ui->comboAssignedTo->clear();
     QList<User*> users = issue->project()->repository()->users();
     for( int i=0, n=users.size() ; i<n ; i++ ) {
-        ui->comboAssignedTo->addItem(QString("%1 %2").arg(users.at(i)->firstName()).arg(users.at(i)->lastName()), users.at(i)->id());
+        ui->comboAssignedTo->addItem(QString::fromLatin1("%1 %2").arg(users.at(i)->firstName()).arg(users.at(i)->lastName()), users.at(i)->id());
         if( users.at(i)->id() == issue->assignedTo()->id() ) {
             ui->comboAssignedTo->setCurrentIndex(i);
         }
@@ -255,7 +255,7 @@ void MainWindow::saveIssueChanges()
     }
     int doneRatio = ui->comboDoneRatio->currentIndex()*10;
     IssueStatus *status = this->m_currentIssue->project()->repository()->issueStatus(ui->comboStatus->itemData(ui->comboStatus->currentIndex()).toInt());
-    Priority *priority = this->m_currentIssue->project()->repository()->getAndAddPriority(ui->comboStatus->itemData(ui->comboPriority->currentIndex()).toInt(), "");
+    Priority *priority = this->m_currentIssue->project()->repository()->getAndAddPriority(ui->comboStatus->itemData(ui->comboPriority->currentIndex()).toInt(), QString());
     User *assignedTo = this->m_currentIssue->project()->repository()->user(ui->comboAssignedTo->itemData(ui->comboAssignedTo->currentIndex()).toInt());
     Tracker tracker = this->m_currentIssue->project()->tracker(ui->comboTracker->itemData(ui->comboTracker->currentIndex()).toInt());
     IssueCategory *category = this->m_currentIssue->project()->issueCategory(ui->comboCategory->currentIndex());

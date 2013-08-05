@@ -21,7 +21,7 @@ public:
     QString category() const;
     QString displayCategory() const;
     QWidget *createPage(QWidget *parent);
-    QIcon categoryIcon() const;
+    QString categoryIcon() const;
     void apply();
     void finish();
     QList<SettingsRepository> repositories();

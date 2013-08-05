@@ -77,7 +77,7 @@ void Repository::initialize()
 {
     this->cleanUp();
 
-    QUrl usersUrl(this->server() + "/users.xml?limit=100");
+    QUrl usersUrl(this->server() + QLatin1String("/users.xml?limit=100"));
     usersUrl.setUserName(this->username());
     usersUrl.setPassword(this->password());
 
@@ -90,7 +90,7 @@ void Repository::initialize()
 void Repository::authRequired(QNetworkReply *reply, QAuthenticator *auth)
 {
     NetworkAuthDialog dlg;
-    dlg.setSitename(QString("%1 @ %2").arg(auth->realm()).arg(reply->url().host()));
+    dlg.setSitename(QString::fromLatin1("%1 @ %2").arg(auth->realm()).arg(reply->url().host()));
     dlg.setUsername(reply->url().userName());
     dlg.setPassword(reply->url().password());
     if( dlg.exec() == QDialog::Accepted ) {
@@ -106,15 +106,16 @@ void Repository::usersReadyRead()
     this->m_queryRunning = false;
 
     if( this->m_usersReply->error() != QNetworkReply::NoError ) {
+//      qDebug() << "this->m_usersReply" << this->m_usersReply->errorString();
         this->cleanUp();
         emit ready(this->id(), true);
         return;
     }
 
-    QString msg = this->m_usersReply->readAll();
+    QString msg = QString::fromLatin1(this->m_usersReply->readAll().constData());
     this->parseUsers(msg);
 
-    QUrl issueStatusesUrl(this->server() + "/issue_statuses.xml");
+    QUrl issueStatusesUrl(this->server() + QLatin1String("/issue_statuses.xml"));
     issueStatusesUrl.setUserName(this->username());
     issueStatusesUrl.setPassword(this->password());
 
@@ -134,10 +135,10 @@ void Repository::issueStatusesReadyRead()
         return;
     }
 
-    QString msg = this->m_issueStatusesReply->readAll();
+    QString msg = QString::fromLatin1(this->m_issueStatusesReply->readAll().constData());
     this->parseIssueStatuses(msg);
 
-    QUrl projectsUrl(this->server() + "/projects.xml?limit=100");
+    QUrl projectsUrl(this->server() + QLatin1String("/projects.xml?limit=100"));
     projectsUrl.setUserName(this->username());
     projectsUrl.setPassword(this->password());
 
@@ -157,7 +158,7 @@ void Repository::projectsReadyRead()
         return;
     }
 
-    QString msg = this->m_projectsReply->readAll();
+    QString msg = QString::fromLatin1(this->m_projectsReply->readAll().constData());
     this->parseProjects(msg);
     for( int i=0, n=this->m_projects.size() ; i<n ; i++ ) {
         this->m_projects[i]->initialize();
@@ -198,21 +199,21 @@ void Repository::parseUsers(QString xml)
 {
     // create an empty user
     User *eU = new User(this);
-    eU->setFirstName("");
-    eU->setLastName("");
-    eU->setMail("");
+    eU->setFirstName(QString());
+    eU->setLastName(QString());
+    eU->setMail(QString());
     eU->setId(0);
     this->m_users.append(eU);
 
     QDomDocument domDoc;
     domDoc.setContent(xml);
-    QDomNodeList nl = domDoc.elementsByTagName("user");
+    QDomNodeList nl = domDoc.elementsByTagName(QLatin1String("user"));
     for( int i=0, n=nl.count() ; i<n ; i++ ) {
         User *u = new User(this);
-        u->setId(nl.at(i).toElement().elementsByTagName("id").at(0).toElement().text().toInt());
-        u->setFirstName(nl.at(i).toElement().elementsByTagName("firstname").at(0).toElement().text());
-        u->setLastName(nl.at(i).toElement().elementsByTagName("lastname").at(0).toElement().text());
-        u->setMail(nl.at(i).toElement().elementsByTagName("mail").at(0).toElement().text());
+        u->setId(nl.at(i).toElement().elementsByTagName(QLatin1String("id")).at(0).toElement().text().toInt());
+        u->setFirstName(nl.at(i).toElement().elementsByTagName(QLatin1String("firstname")).at(0).toElement().text());
+        u->setLastName(nl.at(i).toElement().elementsByTagName(QLatin1String("lastname")).at(0).toElement().text());
+        u->setMail(nl.at(i).toElement().elementsByTagName(QLatin1String("mail")).at(0).toElement().text());
         this->m_users.append(u);
     }
 }
@@ -221,11 +222,11 @@ void Repository::parseIssueStatuses(QString xml)
 {
     QDomDocument domDoc;
     domDoc.setContent(xml);
-    QDomNodeList nl = domDoc.elementsByTagName("issue_status");
+    QDomNodeList nl = domDoc.elementsByTagName(QLatin1String("issue_status"));
     for( int i=0, n=nl.count() ; i<n ; i++ ) {
         IssueStatus *is = new IssueStatus(this);
-        is->setId(nl.at(i).toElement().elementsByTagName("id").at(0).toElement().text().toInt());
-        is->setName(nl.at(i).toElement().elementsByTagName("name").at(0).toElement().text());
+        is->setId(nl.at(i).toElement().elementsByTagName(QLatin1String("id")).at(0).toElement().text().toInt());
+        is->setName(nl.at(i).toElement().elementsByTagName(QLatin1String("name")).at(0).toElement().text());
         this->m_issueStatuses.append(is);
     }
 }
@@ -234,13 +235,13 @@ void Repository::parseProjects(QString xml)
 {
     QDomDocument domDoc;
     domDoc.setContent(xml);
-    QDomNodeList nl = domDoc.elementsByTagName("project");
+    QDomNodeList nl = domDoc.elementsByTagName(QLatin1String("project"));
     for( int i=0, n=nl.count() ; i<n ; i++ ) {
         Project *p = new Project(this);
-        p->setId(nl.at(i).toElement().elementsByTagName("id").at(0).toElement().text().toInt());
-        p->setName(nl.at(i).toElement().elementsByTagName("name").at(0).toElement().text());
-        p->setIdentifier(nl.at(i).toElement().elementsByTagName("identifier").at(0).toElement().text());
-        p->setDescription(nl.at(i).toElement().elementsByTagName("description").at(0).toElement().text());
+        p->setId(nl.at(i).toElement().elementsByTagName(QLatin1String("id")).at(0).toElement().text().toInt());
+        p->setName(nl.at(i).toElement().elementsByTagName(QLatin1String("name")).at(0).toElement().text());
+        p->setIdentifier(nl.at(i).toElement().elementsByTagName(QLatin1String("identifier")).at(0).toElement().text());
+        p->setDescription(nl.at(i).toElement().elementsByTagName(QLatin1String("description")).at(0).toElement().text());
         this->m_projects.append(p);
     }
 }

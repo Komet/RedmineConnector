@@ -21,7 +21,7 @@ Issue::~Issue()
 
 void Issue::load()
 {
-    QUrl issueUrl(QString("%1/issues/%2.xml?include=journals").arg(this->m_project->repository()->server()).arg(this->id()));
+    QUrl issueUrl(QString::fromLatin1("%1/issues/%2.xml?include=journals").arg(this->m_project->repository()->server()).arg(this->id()));
     issueUrl.setUserName(this->m_project->repository()->username());
     issueUrl.setPassword(this->m_project->repository()->password());
 
@@ -36,7 +36,7 @@ void Issue::issueReadyRead()
         return;
     }
 
-    QString msg = this->m_issueReply->readAll();
+    QString msg = QString::fromLatin1(this->m_issueReply->readAll().constData());
     this->parseIssue(msg);
     emit ready(this);
 }
@@ -47,61 +47,61 @@ void Issue::parseIssue(QString xml)
 
     QDomDocument domDoc;
     domDoc.setContent(xml);
-    QDomNodeList nl = domDoc.elementsByTagName("journal");
+    QDomNodeList nl = domDoc.elementsByTagName(QLatin1String("journal"));
     for( int i=0, iN=nl.count() ; i<iN ; i++ ) {
         QList<QString> details;
-        QDomNodeList dnl = nl.at(i).toElement().elementsByTagName("details").at(0).toElement().elementsByTagName("detail");
+        QDomNodeList dnl = nl.at(i).toElement().elementsByTagName(QLatin1String("details")).at(0).toElement().elementsByTagName(QLatin1String("detail"));
         for( int n=0, nD=dnl.size() ; n<nD ; n++ ) {
             QString detail;
-            if( dnl.at(n).toElement().attribute("property").compare("attr") == 0 ) {
-                QString attrName = dnl.at(n).toElement().attribute("name");
+            if( dnl.at(n).toElement().attribute(QLatin1String("property")).compare(QLatin1String("attr")) == 0 ) {
+                QString attrName = dnl.at(n).toElement().attribute(QLatin1String("name"));
                 QString trAttrName;
                 QString oldValue;
                 QString newValue;
-                if( attrName.compare("done_ratio") == 0 ) {
+                if( attrName.compare(QLatin1String("done_ratio")) == 0 ) {
                     trAttrName = tr("% Done");
-                    oldValue = dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text();
-                    newValue = dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text();
-                } else if( attrName.compare("start_date") == 0 ) {
+                    oldValue = dnl.at(n).toElement().elementsByTagName(QLatin1String("old_value")).at(0).toElement().text();
+                    newValue = dnl.at(n).toElement().elementsByTagName(QLatin1String("new_value")).at(0).toElement().text();
+                } else if( attrName.compare(QLatin1String("start_date")) == 0 ) {
                     trAttrName = tr("Start Date");
-                    oldValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text(), "yyyy-MM-dd").toString(Qt::SystemLocaleShortDate);
-                    newValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text(), "yyyy-MM-dd").toString(Qt::SystemLocaleShortDate);
-                } else if( attrName.compare("due_date") == 0 ) {
+                    oldValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName(QLatin1String("old_value")).at(0).toElement().text(), QLatin1String("yyyy-MM-dd")).toString(Qt::SystemLocaleShortDate);
+                    newValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName(QLatin1String("new_value")).at(0).toElement().text(), QLatin1String("yyyy-MM-dd")).toString(Qt::SystemLocaleShortDate);
+                } else if( attrName.compare(QLatin1String("due_date")) == 0 ) {
                     trAttrName = tr("Due Date");
-                    oldValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text(), "yyyy-MM-dd").toString(Qt::SystemLocaleShortDate);
-                    newValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text(), "yyyy-MM-dd").toString(Qt::SystemLocaleShortDate);
-                } else if( attrName.compare("assigned_to_id") == 0 ) {
+                    oldValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName(QLatin1String("old_value")).at(0).toElement().text(), QLatin1String("yyyy-MM-dd")).toString(Qt::SystemLocaleShortDate);
+                    newValue = QDate::fromString(dnl.at(n).toElement().elementsByTagName(QLatin1String("new_value")).at(0).toElement().text(), QLatin1String("yyyy-MM-dd")).toString(Qt::SystemLocaleShortDate);
+                } else if( attrName.compare(QLatin1String("assigned_to_id")) == 0 ) {
                     trAttrName = tr("Assignee");
-                    oldValue = this->project()->repository()->user(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt())->fullName();
-                    newValue = this->project()->repository()->user(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt())->fullName();
-                } else if( attrName.compare("status_id") == 0 ) {
+                    oldValue = this->project()->repository()->user(dnl.at(n).toElement().elementsByTagName(QLatin1String("old_value")).at(0).toElement().text().toInt())->fullName();
+                    newValue = this->project()->repository()->user(dnl.at(n).toElement().elementsByTagName(QLatin1String("new_value")).at(0).toElement().text().toInt())->fullName();
+                } else if( attrName.compare(QLatin1String("status_id")) == 0 ) {
                     trAttrName = tr("Status");
-                    oldValue = this->m_project->repository()->issueStatus(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt())->name();
-                    newValue = this->m_project->repository()->issueStatus(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt())->name();
-                } else if( attrName.compare("tracker_id") == 0 ) {
+                    oldValue = this->m_project->repository()->issueStatus(dnl.at(n).toElement().elementsByTagName(QLatin1String("old_value")).at(0).toElement().text().toInt())->name();
+                    newValue = this->m_project->repository()->issueStatus(dnl.at(n).toElement().elementsByTagName(QLatin1String("new_value")).at(0).toElement().text().toInt())->name();
+                } else if( attrName.compare(QLatin1String("tracker_id")) == 0 ) {
                     trAttrName = tr("Tracker");
-                    oldValue = this->project()->tracker(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt()).name;
-                    newValue = this->project()->tracker(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt()).name;
-                } else if( attrName.compare("description") == 0 ) {
+                    oldValue = this->project()->tracker(dnl.at(n).toElement().elementsByTagName(QLatin1String("old_value")).at(0).toElement().text().toInt()).name;
+                    newValue = this->project()->tracker(dnl.at(n).toElement().elementsByTagName(QLatin1String("new_value")).at(0).toElement().text().toInt()).name;
+                } else if( attrName.compare(QLatin1String("description")) == 0 ) {
                     trAttrName = tr("Description");
-                    oldValue = dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text();
-                    newValue = dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text();
-                } else if( attrName.compare("category_id") == 0 ) {
+                    oldValue = dnl.at(n).toElement().elementsByTagName(QLatin1String("old_value")).at(0).toElement().text();
+                    newValue = dnl.at(n).toElement().elementsByTagName(QLatin1String("new_value")).at(0).toElement().text();
+                } else if( attrName.compare(QLatin1String("category_id")) == 0 ) {
                     trAttrName = tr("Category");
-                    oldValue = this->project()->issueCategoryFromId(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt())->name();
-                    newValue = this->project()->issueCategoryFromId(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt())->name();
-                } else if( attrName.compare("priority_id") == 0 ) {
+                    oldValue = this->project()->issueCategoryFromId(dnl.at(n).toElement().elementsByTagName(QLatin1String("old_value")).at(0).toElement().text().toInt())->name();
+                    newValue = this->project()->issueCategoryFromId(dnl.at(n).toElement().elementsByTagName(QLatin1String("new_value")).at(0).toElement().text().toInt())->name();
+                } else if( attrName.compare(QLatin1String("priority_id")) == 0 ) {
                     trAttrName = tr("Priority");
-                    oldValue = this->project()->repository()->getAndAddPriority(dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text().toInt(), tr("Unkown Priority"))->name();
-                    newValue = this->project()->repository()->getAndAddPriority(dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text().toInt(), tr("Unkown Priority"))->name();
-                } else if( attrName.compare("estimated_hours") == 0 ) {
+                    oldValue = this->project()->repository()->getAndAddPriority(dnl.at(n).toElement().elementsByTagName(QLatin1String("old_value")).at(0).toElement().text().toInt(), tr("Unkown Priority"))->name();
+                    newValue = this->project()->repository()->getAndAddPriority(dnl.at(n).toElement().elementsByTagName(QLatin1String("new_value")).at(0).toElement().text().toInt(), tr("Unkown Priority"))->name();
+                } else if( attrName.compare(QLatin1String("estimated_hours")) == 0 ) {
                     trAttrName = tr("Estimated Time");
-                    oldValue = dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text();
-                    newValue = dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text();
+                    oldValue = dnl.at(n).toElement().elementsByTagName(QLatin1String("old_value")).at(0).toElement().text();
+                    newValue = dnl.at(n).toElement().elementsByTagName(QLatin1String("new_value")).at(0).toElement().text();
                 } else {
                     trAttrName = tr("Unknown Attribute");
-                    oldValue = dnl.at(n).toElement().elementsByTagName("old_value").at(0).toElement().text();
-                    newValue = dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text();
+                    oldValue = dnl.at(n).toElement().elementsByTagName(QLatin1String("old_value")).at(0).toElement().text();
+                    newValue = dnl.at(n).toElement().elementsByTagName(QLatin1String("new_value")).at(0).toElement().text();
                 }
 
                 if( !oldValue.isEmpty() && !newValue.isEmpty() ) {
@@ -111,11 +111,11 @@ void Issue::parseIssue(QString xml)
                 } else {
                     detail = tr("<b>%1</b> set to <b>%2</b>").arg(trAttrName).arg(newValue);
                 }
-            } else if( dnl.at(n).toElement().attribute("property").compare("attachment") == 0 ) {
-                QString filename = dnl.at(n).toElement().elementsByTagName("new_value").at(0).toElement().text();
-                QString url = QString("%1/attachments/%2/%3")
+            } else if( dnl.at(n).toElement().attribute(QLatin1String("property")).compare(QLatin1String("attachment")) == 0 ) {
+                QString filename = dnl.at(n).toElement().elementsByTagName(QLatin1String("new_value")).at(0).toElement().text();
+                QString url = QString::fromLatin1("%1/attachments/%2/%3")
                                 .arg(this->project()->repository()->server())
-                                .arg(dnl.at(n).toElement().attribute("name"))
+                                .arg(dnl.at(n).toElement().attribute(QLatin1String("name")))
                                 .arg(filename);
                 detail = tr("<b>File</b> <a href=\"%1\">%2</a> added").arg(url).arg(filename);
             }
@@ -124,9 +124,9 @@ void Issue::parseIssue(QString xml)
             details.append(detail);
         }
         IssueDetail issueDetail;
-        issueDetail.createdOn = QDateTime::fromString(nl.at(i).toElement().elementsByTagName("created_on").at(0).toElement().text().left(19), "yyyy-MM-ddTHH:mm:ss");
-        issueDetail.notes = nl.at(i).toElement().elementsByTagName("notes").at(0).toElement().text();
-        issueDetail.user = this->m_project->repository()->user(nl.at(i).toElement().elementsByTagName("user").at(0).toElement().attribute("id").toInt());
+        issueDetail.createdOn = QDateTime::fromString(nl.at(i).toElement().elementsByTagName(QLatin1String("created_on")).at(0).toElement().text().left(19), QLatin1String("yyyy-MM-ddTHH:mm:ss"));
+        issueDetail.notes = nl.at(i).toElement().elementsByTagName(QLatin1String("notes")).at(0).toElement().text();
+        issueDetail.user = this->m_project->repository()->user(nl.at(i).toElement().elementsByTagName(QLatin1String("user")).at(0).toElement().attribute(QLatin1String("id")).toInt());
         issueDetail.details = details;
         this->m_issueDetails.append(issueDetail);
     }
@@ -148,29 +148,29 @@ void Issue::setChangeset(IssueStatus *status, Priority *priority, User *assigned
     QString xml;
     QXmlStreamWriter stream(&xml);
     stream.writeStartDocument();
-    stream.writeStartElement("issue");
-    stream.writeTextElement("status_id", QString("%1").arg(status->id()));
-    stream.writeTextElement("notes", notes);
-    stream.writeTextElement("issue_status_id", QString("%1").arg(status->id()));
+    stream.writeStartElement(QLatin1String("issue"));
+    stream.writeTextElement(QLatin1String("status_id"), QString::fromLatin1("%1").arg(status->id()));
+    stream.writeTextElement(QLatin1String("notes"), notes);
+    stream.writeTextElement(QLatin1String("issue_status_id"), QString::fromLatin1("%1").arg(status->id()));
     // stream.writeTextElement("priority_id", QString("%1").arg(priority->id()));
-    stream.writeTextElement("assigned_to_id", QString("%1").arg(assignedTo->id()));
-    stream.writeTextElement("tracker_id", QString("%1").arg(tracker.id));
-    QString categoryString = (category->id() == 0) ? "" : QString("%1").arg(category->id());
-    stream.writeTextElement("category_id", QString("%1").arg(categoryString));
-    stream.writeTextElement("start_date", startDate.toString("yyyy-MM-dd"));
+    stream.writeTextElement(QLatin1String("assigned_to_id"), QString::fromLatin1("%1").arg(assignedTo->id()));
+    stream.writeTextElement(QLatin1String("tracker_id"), QString::fromLatin1("%1").arg(tracker.id));
+    QString categoryString = (category->id() == 0) ? QString() : QString::fromLatin1("%1").arg(category->id());
+    stream.writeTextElement(QLatin1String("category_id"), QString::fromLatin1("%1").arg(categoryString));
+    stream.writeTextElement(QLatin1String("start_date"), startDate.toString(QLatin1String("yyyy-MM-dd")));
     if( dueDate.isValid() ) {
-        stream.writeTextElement("due_date", dueDate.toString("yyyy-MM-dd"));
+        stream.writeTextElement(QLatin1String("due_date"), dueDate.toString(QLatin1String("yyyy-MM-dd")));
     }
-    stream.writeTextElement("done_ratio", QString("%1").arg(doneRatio));
+    stream.writeTextElement(QLatin1String("done_ratio"), QString::fromLatin1("%1").arg(doneRatio));
     stream.writeEndElement(); // issue
     stream.writeEndDocument();
 
-    QUrl issuePutUrl(QString("%1/issues/%2.xml").arg(this->m_project->repository()->server()).arg(this->id()));
+    QUrl issuePutUrl(QString::fromLatin1("%1/issues/%2.xml").arg(this->m_project->repository()->server()).arg(this->id()));
     issuePutUrl.setUserName(this->m_project->repository()->username());
     issuePutUrl.setPassword(this->m_project->repository()->password());
 
     QNetworkRequest request(issuePutUrl);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "text/xml");
+    request.setHeader(QNetworkRequest::ContentTypeHeader, QLatin1String("text/xml"));
 
     this->m_issuePutReply = this->m_project->qnam()->put(request, xml.toUtf8());
     connect(this->m_issuePutReply, SIGNAL(finished()), this, SLOT(issuePutReadyRead()));
@@ -316,12 +316,12 @@ void Issue::setDescription(QString description)
 
 void Issue::setStartDate(QString startDate)
 {
-    this->m_startDate = QDate::fromString(startDate, "yyyy-MM-dd");
+    this->m_startDate = QDate::fromString(startDate, QLatin1String("yyyy-MM-dd"));
 }
 
 void Issue::setDueDate(QString dueDate)
 {
-    this->m_dueDate = QDate::fromString(dueDate, "yyyy-MM-dd");
+    this->m_dueDate = QDate::fromString(dueDate, QLatin1String("yyyy-MM-dd"));
 }
 
 void Issue::setDoneRatio(float doneRatio)
@@ -331,12 +331,12 @@ void Issue::setDoneRatio(float doneRatio)
 
 void Issue::setCreatedOn(QString createdOn)
 {
-    this->m_createdOn = QDateTime::fromString(createdOn.left(19), "yyyy-MM-ddTHH:mm:ss");
+    this->m_createdOn = QDateTime::fromString(createdOn.left(19), QLatin1String("yyyy-MM-ddTHH:mm:ss"));
 }
 
 void Issue::setUpdatedOn(QString updatedOn)
 {
-    this->m_updatedOn = QDateTime::fromString(updatedOn.left(19), "yyyy-MM-ddTHH:mm:ss");
+    this->m_updatedOn = QDateTime::fromString(updatedOn.left(19), QLatin1String("yyyy-MM-ddTHH:mm:ss"));
 }
 
 void Issue::setAuthor(User *author)
