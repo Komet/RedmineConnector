@@ -9,11 +9,11 @@ TableItemIssue::TableItemIssue(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    ui->subject->setText("");
-    ui->status->setText("");
-    ui->assignedTo->setText("");
-    ui->updated->setText("");
-    ui->due->setText("");
+    ui->subject->setText(QString());
+    ui->status->setText(QString());
+    ui->assignedTo->setText(QString());
+    ui->updated->setText(QString());
+    ui->due->setText(QString());
 
     QFont font = ui->assignedTo->font();
     font.setPointSize(font.pointSize()-2);
@@ -35,9 +35,9 @@ void TableItemIssue::setIsCurrentItem(bool isCurrent)
     font.setBold(isCurrent);
     ui->subject->setFont(font);
     if( isCurrent ) {
-        ui->tableWidgetIssue->setStyleSheet("background-color: rgba(200, 220, 255);");
+        ui->tableWidgetIssue->setStyleSheet(QLatin1String("background-color: rgba(200, 220, 255);"));
     } else {
-        ui->tableWidgetIssue->setStyleSheet("");
+        ui->tableWidgetIssue->setStyleSheet(QString());
     }
 }
 
@@ -45,14 +45,14 @@ void TableItemIssue::setIssue(RedmineConnector::Issue *issue)
 {
     this->m_issue = issue;
 
-    ui->issueId->setText(QString("#%1").arg(issue->id()));
+    ui->issueId->setText(QString::fromLatin1("#%1").arg(issue->id()));
     ui->subject->setText(issue->subject());
     ui->status->setText(issue->issueStatus()->name());
-    ui->assignedTo->setText(QString("%1 %2").arg(issue->assignedTo()->firstName()).arg(issue->assignedTo()->lastName()).trimmed());
+    ui->assignedTo->setText(QString::fromLatin1("%1 %2").arg(issue->assignedTo()->firstName()).arg(issue->assignedTo()->lastName()).trimmed());
     ui->updated->setText(issue->updatedOn().date().toString(Qt::SystemLocaleShortDate));
 
     if( !issue->dueDate().isValid() ) {
-        ui->due->setText("");
+        ui->due->setText(QString());
         return;
     }
     int daysTo = QDate::currentDate().daysTo(issue->dueDate());
@@ -63,13 +63,13 @@ void TableItemIssue::setIssue(RedmineConnector::Issue *issue)
     }
 
     if( daysTo > 7 ) {
-        ui->due->setStyleSheet("color: rgb(170, 170, 170);");
+        ui->due->setStyleSheet(QLatin1String("color: rgb(170, 170, 170);"));
     } else if( daysTo > 3 ) {
-        ui->due->setStyleSheet("color: rgb(40, 158, 65);");
+        ui->due->setStyleSheet(QLatin1String("color: rgb(40, 158, 65);"));
     } else if( daysTo > 1 ) {
-        ui->due->setStyleSheet("color: rgb(255, 160, 35);");
+        ui->due->setStyleSheet(QLatin1String("color: rgb(255, 160, 35);"));
     } else {
-        ui->due->setStyleSheet("color: rgb(255, 0, 0);");
+        ui->due->setStyleSheet(QLatin1String("color: rgb(255, 0, 0);"));
     }
 }
 

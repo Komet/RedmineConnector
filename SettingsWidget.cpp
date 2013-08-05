@@ -63,10 +63,10 @@ void SettingsWidget::setInputsEnabled(bool enabled)
 void SettingsWidget::showRepository(int num)
 {
     if( num < 0 || num >= this->m_repositories.size() ) {
-        ui->repoName->setText("");
-        ui->repoServer->setText("");
-        ui->repoUser->setText("");
-        ui->repoPassword->setText("");
+        ui->repoName->setText(QString());
+        ui->repoServer->setText(QString());
+        ui->repoUser->setText(QString());
+        ui->repoPassword->setText(QString());
         ui->repoSavePassword->setChecked(false);
         this->setInputsEnabled(false);
         return;
@@ -121,7 +121,7 @@ void SettingsWidget::setCurrentRepoSavePassword(int state)
     }
     this->m_repositories[this->m_currentRepository].savePassword = state;
     if( state == Qt::Unchecked ) {
-        ui->repoPassword->setText("");
+        ui->repoPassword->setText(QString());
     }
     ui->repoPassword->setEnabled(state != Qt::Unchecked);
 }
