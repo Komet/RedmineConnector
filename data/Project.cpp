@@ -65,7 +65,7 @@ void Project::initialize()
 {
     this->cleanUp();
 
-    QUrl projectUrl(this->m_repository->server() + QString("/projects/%1.xml?include=trackers,issue_categories").arg(this->id()));
+    QUrl projectUrl(this->m_repository->server() + QString::fromLatin1("/projects/%1.xml?include=trackers,issue_categories").arg(this->id()));
     projectUrl.setUserName(this->m_repository->username());
     projectUrl.setPassword(this->m_repository->password());
 
@@ -85,10 +85,10 @@ void Project::projectReadyRead()
         return;
     }
 
-    QString msg = this->m_projectReply->readAll();
+    QString msg = QString::fromLatin1(this->m_projectReply->readAll().constData());
     this->parseProject(msg);
 
-    QUrl issuesUrl(this->m_repository->server() + QString("/projects/%1/issues.xml?limit=100").arg(this->id()));
+    QUrl issuesUrl(this->m_repository->server() + QString::fromLatin1("/projects/%1/issues.xml?limit=100").arg(this->id()));
     issuesUrl.setUserName(this->m_repository->username());
     issuesUrl.setPassword(this->m_repository->password());
 
@@ -108,7 +108,7 @@ void Project::issuesReadyRead()
         return;
     }
 
-    QString msg = this->m_issuesReply->readAll();
+    QString msg = QString::fromLatin1(this->m_issuesReply->readAll().constData());
     this->parseIssues(msg);
     this->m_ready = true;
     emit ready(this->id(), false);
@@ -120,25 +120,25 @@ void Project::parseProject(QString xml)
 {
     // create an empty category
     IssueCategory *eC = new IssueCategory(this);
-    eC->setName("");
+    eC->setName(QString());
     eC->setId(0);
     this->m_issueCategories.append(eC);
 
     QDomDocument domDoc;
     domDoc.setContent(xml);
-    QDomNodeList nl = domDoc.elementsByTagName("issue_category");
+    QDomNodeList nl = domDoc.elementsByTagName(QLatin1String("issue_category"));
     for( int i=0, n=nl.count() ; i<n ; i++ ) {
         IssueCategory *ic = new IssueCategory(this);
-        ic->setId(nl.at(i).toElement().attribute("id").toInt());
-        ic->setName(nl.at(i).toElement().attribute("name"));
+        ic->setId(nl.at(i).toElement().attribute(QLatin1String("id")).toInt());
+        ic->setName(nl.at(i).toElement().attribute(QLatin1String("name")));
         this->m_issueCategories.append(ic);
     }
 
-    nl = domDoc.elementsByTagName("tracker");
+    nl = domDoc.elementsByTagName(QLatin1String("tracker"));
     for( int i=0, n=nl.count() ; i<n ; i++ ) {
         Tracker t;
-        t.id = nl.at(i).toElement().attribute("id").toInt();
-        t.name = nl.at(i).toElement().attribute("name");
+        t.id = nl.at(i).toElement().attribute(QLatin1String("id")).toInt();
+        t.name = nl.at(i).toElement().attribute(QLatin1String("name"));
         this->m_trackers.append(t);
     }
 }
@@ -147,24 +147,24 @@ void Project::parseIssues(QString xml)
 {
     QDomDocument domDoc;
     domDoc.setContent(xml);
-    QDomNodeList nl = domDoc.elementsByTagName("issue");
+    QDomNodeList nl = domDoc.elementsByTagName(QLatin1String("issue"));
     for( int i=0, n=nl.count() ; i<n ; i++ ) {
         Issue *issue = new Issue(this);
-        issue->setId(nl.at(i).toElement().elementsByTagName("id").at(0).toElement().text().toInt());
-        issue->setPriorityId(nl.at(i).toElement().elementsByTagName("priority").at(0).toElement().attribute("id").toInt());
-        issue->setPriorityName(nl.at(i).toElement().elementsByTagName("priority").at(0).toElement().attribute("name"));
-        issue->setSubject(nl.at(i).toElement().elementsByTagName("subject").at(0).toElement().text());
-        issue->setDescription(nl.at(i).toElement().elementsByTagName("description").at(0).toElement().text());
-        issue->setStartDate(nl.at(i).toElement().elementsByTagName("start_date").at(0).toElement().text());
-        issue->setDueDate(nl.at(i).toElement().elementsByTagName("due_date").at(0).toElement().text());
-        issue->setDoneRatio(nl.at(i).toElement().elementsByTagName("done_ratio").at(0).toElement().text().toFloat());
-        issue->setCreatedOn(nl.at(i).toElement().elementsByTagName("created_on").at(0).toElement().text());
-        issue->setUpdatedOn(nl.at(i).toElement().elementsByTagName("updated_on").at(0).toElement().text());
-        issue->setAuthor(this->m_repository->user(nl.at(i).toElement().elementsByTagName("author").at(0).toElement().attribute("id").toInt()));
-        issue->setAssignedTo(this->m_repository->user(nl.at(i).toElement().elementsByTagName("assigned_to").at(0).toElement().attribute("id").toInt()));
-        issue->setIssueStatus(this->m_repository->issueStatus(nl.at(i).toElement().elementsByTagName("status").at(0).toElement().attribute("id").toInt()));
-        issue->setIssueCategory(this->issueCategoryFromId(nl.at(i).toElement().elementsByTagName("category").at(0).toElement().attribute("id").toInt()));
-        issue->setTracker(this->tracker(nl.at(i).toElement().elementsByTagName("tracker").at(0).toElement().attribute("id").toInt()));
+        issue->setId(nl.at(i).toElement().elementsByTagName(QLatin1String("id")).at(0).toElement().text().toInt());
+        issue->setPriorityId(nl.at(i).toElement().elementsByTagName(QLatin1String("priority")).at(0).toElement().attribute(QLatin1String("id")).toInt());
+        issue->setPriorityName(nl.at(i).toElement().elementsByTagName(QLatin1String("priority")).at(0).toElement().attribute(QLatin1String("name")));
+        issue->setSubject(nl.at(i).toElement().elementsByTagName(QLatin1String("subject")).at(0).toElement().text());
+        issue->setDescription(nl.at(i).toElement().elementsByTagName(QLatin1String("description")).at(0).toElement().text());
+        issue->setStartDate(nl.at(i).toElement().elementsByTagName(QLatin1String("start_date")).at(0).toElement().text());
+        issue->setDueDate(nl.at(i).toElement().elementsByTagName(QLatin1String("due_date")).at(0).toElement().text());
+        issue->setDoneRatio(nl.at(i).toElement().elementsByTagName(QLatin1String("done_ratio")).at(0).toElement().text().toFloat());
+        issue->setCreatedOn(nl.at(i).toElement().elementsByTagName(QLatin1String("created_on")).at(0).toElement().text());
+        issue->setUpdatedOn(nl.at(i).toElement().elementsByTagName(QLatin1String("updated_on")).at(0).toElement().text());
+        issue->setAuthor(this->m_repository->user(nl.at(i).toElement().elementsByTagName(QLatin1String("author")).at(0).toElement().attribute(QLatin1String("id")).toInt()));
+        issue->setAssignedTo(this->m_repository->user(nl.at(i).toElement().elementsByTagName(QLatin1String("assigned_to")).at(0).toElement().attribute(QLatin1String("id")).toInt()));
+        issue->setIssueStatus(this->m_repository->issueStatus(nl.at(i).toElement().elementsByTagName(QLatin1String("status")).at(0).toElement().attribute(QLatin1String("id")).toInt()));
+        issue->setIssueCategory(this->issueCategoryFromId(nl.at(i).toElement().elementsByTagName(QLatin1String("category")).at(0).toElement().attribute(QLatin1String("id")).toInt()));
+        issue->setTracker(this->tracker(nl.at(i).toElement().elementsByTagName(QLatin1String("tracker")).at(0).toElement().attribute(QLatin1String("id")).toInt()));
         this->m_issues.append(issue);
     }
 }

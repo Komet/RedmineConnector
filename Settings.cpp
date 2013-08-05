@@ -12,18 +12,22 @@ Settings* Settings::_instance = 0;
 Settings::Settings(QObject *parent) :
     IOptionsPage(parent)
 {
+  setDisplayCategory(tr("Redmine Connector"));
+  setCategoryIcon(categoryIcon());
+  setDisplayName(tr("General"));
+
     _instance = this;
     if( QSettings *settings = Core::ICore::instance()->settings() ) {
-        settings->beginGroup(Constants::SETTINGS_CATEGORY);
-        int size = settings->beginReadArray("Repositories");
+        settings->beginGroup(QString::fromLatin1(Constants::SETTINGS_CATEGORY));
+        int size = settings->beginReadArray(QLatin1String("Repositories"));
         for( int i=0 ; i<size ; i++ ) {
             SettingsRepository r;
             settings->setArrayIndex(i);
-            r.name         = settings->value("Name").toString();
-            r.server       = settings->value("Server").toString();
-            r.user         = settings->value("User").toString();
-            r.savePassword = settings->value("SavePassword").toInt();
-            r.password     = settings->value("Password").toString();
+            r.name         = settings->value(QLatin1String("Name")).toString();
+            r.server       = settings->value(QLatin1String("Server")).toString();
+            r.user         = settings->value(QLatin1String("User")).toString();
+            r.savePassword = settings->value(QLatin1String("SavePassword")).toInt();
+            r.password     = settings->value(QLatin1String("Password")).toString();
             this->_repositories.append(r);
         }
         settings->endArray();
@@ -45,7 +49,7 @@ Settings* Settings::instance()
 
 QString Settings::id() const
 {
-    return "RedmineConnectorSettings";
+    return QLatin1String("RedmineConnectorSettings");
 }
 
 QString Settings::displayName() const
@@ -55,7 +59,7 @@ QString Settings::displayName() const
 
 QString Settings::category() const
 {
-    return Constants::SETTINGS_CATEGORY;
+    return QLatin1String(Constants::SETTINGS_CATEGORY);
 }
 
 
@@ -64,9 +68,9 @@ QString Settings::displayCategory() const
     return tr("Redmine");
 }
 
-QIcon Settings::categoryIcon() const
+QString Settings::categoryIcon() const
 {
-    return QIcon(":/img/redmine_fluid_icon.png");
+    return QLatin1String(":/img/redmine_fluid_icon.png");
 }
 
 QWidget* Settings::createPage(QWidget *parent)
@@ -80,15 +84,15 @@ void Settings::apply()
 {
     this->_repositories = this->settingsWidget->repositories();
     if( QSettings *settings = Core::ICore::instance()->settings() ) {
-        settings->beginGroup(Constants::SETTINGS_CATEGORY);
-        settings->beginWriteArray("Repositories");
+        settings->beginGroup(QLatin1String(Constants::SETTINGS_CATEGORY));
+        settings->beginWriteArray(QLatin1String("Repositories"));
         for( int i=0 ; i<this->_repositories.size() ; i++ ) {
             settings->setArrayIndex(i);
-            settings->setValue("Name", this->_repositories.at(i).name);
-            settings->setValue("Server", this->_repositories.at(i).server);
-            settings->setValue("User", this->_repositories.at(i).user);
-            settings->setValue("SavePassword", this->_repositories.at(i).savePassword);
-            settings->setValue("Password", this->_repositories.at(i).password);
+            settings->setValue(QLatin1String("Name"), this->_repositories.at(i).name);
+            settings->setValue(QLatin1String("Server"), this->_repositories.at(i).server);
+            settings->setValue(QLatin1String("User"), this->_repositories.at(i).user);
+            settings->setValue(QLatin1String("SavePassword"), this->_repositories.at(i).savePassword);
+            settings->setValue(QLatin1String("Password"), this->_repositories.at(i).password);
         }
         settings->endArray();
         settings->endGroup();
@@ -107,8 +111,8 @@ QList<SettingsRepository> Settings::repositories()
 void Settings::setMainWindowSplitterSizes(QByteArray sizes)
 {
     if( QSettings *settings = Core::ICore::instance()->settings() ) {
-        settings->beginGroup(Constants::SETTINGS_CATEGORY);
-        settings->setValue("MainWindowSplitterSizes", sizes);
+        settings->beginGroup(QLatin1String(Constants::SETTINGS_CATEGORY));
+        settings->setValue(QLatin1String("MainWindowSplitterSizes"), sizes);
         settings->endGroup();
     }
 }
@@ -117,8 +121,8 @@ QByteArray Settings::mainWindowSplitterSizes()
 {
     QByteArray sizes;
     if( QSettings *settings = Core::ICore::instance()->settings() ) {
-        settings->beginGroup(Constants::SETTINGS_CATEGORY);
-        sizes = settings->value("MainWindowSplitterSizes").toByteArray();
+        settings->beginGroup(QLatin1String(Constants::SETTINGS_CATEGORY));
+        sizes = settings->value(QLatin1String("MainWindowSplitterSizes")).toByteArray();
         settings->endGroup();
     }
     return sizes;

@@ -51,7 +51,9 @@ HEADERS +=\
     IssueDetailWidget.h \
     TableItemProject.h
 
-OTHER_FILES = RedmineConnector.pluginspec
+OTHER_FILES = RedmineConnector.pluginspec.in  \
+RedmineConnector_dependencies.pri
+
 
 
 # Qt Creator linking
@@ -75,7 +77,7 @@ isEmpty(IDE_BUILD_TREE):IDE_BUILD_TREE=/usr/local/qt-creator-2.4.0-src/build
 PROVIDER = kVibes
 
 include($$QTCREATOR_SOURCES/src/qtcreatorplugin.pri)
-include($$QTCREATOR_SOURCES/src/plugins/coreplugin/coreplugin.pri)
+include($$QTCREATOR_SOURCES/src/plugins/coreplugin/coreplugin_dependencies.pri)
 
 LIBS += -L$$IDE_PLUGIN_PATH/Nokia
 
@@ -88,7 +90,7 @@ FORMS += \
     TableItemProject.ui
 
 RESOURCES += \
-    RedmineConnector.qrc
+    RedmineConnector.qrc \
 
 TRANSLATIONS += \
     i18n/RedmineConnector_de.ts \
